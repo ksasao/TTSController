@@ -1,7 +1,7 @@
 # TTSController
 各種 Text-to-Speech エンジンを統一的に操作するライブラリです。
 
-#W 対応プラットフォーム
+## 対応プラットフォーム
 - Windows 10 (64bit)
 
 ## TODO
