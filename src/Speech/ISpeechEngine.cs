@@ -8,6 +8,10 @@ namespace Speech
 {
     public interface ISpeechEngine
     {
+        /// <summary>
+        /// 音声合成エンジンの情報を取得します
+        /// </summary>
+        SpeechEngineInfo Info { get; }
         event EventHandler<EventArgs> Finished;
         /// <summary>
         /// 音声合成エンジンを有効化します

@@ -14,11 +14,17 @@ namespace Speech
 
             // VOICEROID+ を列挙
             var voiceroidPlus = new VoiceroidPlusEnumerator();
-            info.AddRange(voiceroidPlus.GetSpeechEngineInfo());
+            if(voiceroidPlus.GetSpeechEngineInfo().Length > 0)
+            {
+                info.AddRange(voiceroidPlus.GetSpeechEngineInfo());
+            }
 
             // VOICEROID2 を列挙
             var voiceroid2 = new Voiceroid2Enumerator();
-            info.AddRange(voiceroid2.GetSpeechEngineInfo());
+            if(voiceroid2.GetSpeechEngineInfo().Length > 0)
+            {
+                info.AddRange(voiceroid2.GetSpeechEngineInfo());
+            }
 
             // SAPI5 を列挙
             var sapi5 = new SAPI5Enumerator();
@@ -45,11 +51,11 @@ namespace Speech
             switch (info.EngineName)
             {
                 case VoiceroidPlusEnumerator.EngineName:
-                    return new VoiceroidPlusController(info.EnginePath);
+                    return new VoiceroidPlusController(info);
                 case Voiceroid2Enumerator.EngineName:
-                    return new Voiceroid2Controller(info.EnginePath, info.LibraryName);
+                    return new Voiceroid2Controller(info);
                 case SAPI5Enumerator.EngineName:
-                    return new SAPI5Controller(info.LibraryName);
+                    return new SAPI5Controller(info);
                 default:
                     break;
             }

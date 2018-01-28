@@ -20,6 +20,8 @@ namespace Speech
     {
         SpVoice _spVoice = null;
         string _voiceName;
+        public SpeechEngineInfo Info { get; private set; }
+
         /// <summary>
         /// 音声再生が完了したときに発生するイベント
         /// </summary>
@@ -30,9 +32,10 @@ namespace Speech
             Finished?.Invoke(this, se);
         }
 
-        public SAPI5Controller(string voiceName)
+        public SAPI5Controller(SpeechEngineInfo info)
         {
-            _voiceName = voiceName;
+            Info = info;
+            _voiceName = info.EngineName;
         }
 
         /// <summary>

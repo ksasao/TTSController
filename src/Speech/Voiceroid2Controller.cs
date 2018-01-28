@@ -72,6 +72,8 @@ namespace Speech
             public int Bottom;
         }
 
+        public SpeechEngineInfo Info { get; private set; }
+
         /// <summary>
         /// Voiceroid のフルパス
         /// </summary>
@@ -82,13 +84,15 @@ namespace Speech
         bool _isPlaying = false;
         bool _isRunning = false;
         double _tickCount = 0;
-        public Voiceroid2Controller(string voiceroidFullPath,string libraryName)
+        public Voiceroid2Controller(SpeechEngineInfo info)
         {
+            Info = info;
+
             var voiceroid2 = new Voiceroid2Enumerator();
             _promptString = voiceroid2.PromptString;
 
-            VoiceroidPath = voiceroidFullPath;
-            _libraryName = libraryName;
+            VoiceroidPath = info.EnginePath;
+            _libraryName = info.LibraryName;
             _timer = new System.Timers.Timer(100);
             _timer.Elapsed += timer_Elapsed;
         }

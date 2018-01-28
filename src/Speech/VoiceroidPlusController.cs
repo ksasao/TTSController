@@ -37,9 +37,12 @@ namespace Speech
         /// </summary>
         public string VoiceroidPath { get; private set; }
 
-        public VoiceroidPlusController(string voiceroidFullPath)
+        public SpeechEngineInfo Info { get; private set; }
+
+        public VoiceroidPlusController(SpeechEngineInfo info)
         {
-            VoiceroidPath = voiceroidFullPath;
+            Info = info;
+            VoiceroidPath = info.EnginePath;
             dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100); // 100ミリ秒ごとにチェック
             dispatcherTimer.Tick += DispatcherTimer_Tick;
