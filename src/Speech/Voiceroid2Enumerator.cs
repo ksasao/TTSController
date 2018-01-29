@@ -10,7 +10,7 @@ namespace Speech
 {
     public class Voiceroid2Enumerator : ISpeechEnumerator
     {
-        string[] _name;
+        string[] _name = new string[0];
         public string PromptString { get; private set; }
 
         public const string EngineName = "VOICEROID2";
@@ -23,12 +23,9 @@ namespace Speech
         {
             List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
             string path = GetInstalledPath();
-            if(_name != null && _name.Length > 0)
+            foreach (var v in _name)
             {
-                foreach (var v in _name)
-                {
-                    info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = path, LibraryName = v });
-                }
+                info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = path, LibraryName = v });
             }
             return info.ToArray();
         }
@@ -96,7 +93,6 @@ namespace Speech
                 }
                 catch
                 {
-                    _name = new string[0];
                     PromptString = "";
                 }
             }
