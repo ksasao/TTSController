@@ -218,6 +218,9 @@ namespace Speech
             AppVar v = control.AppVar;
             v["Focus"]();
             v["Text"](string.Format("{0:0.00}", value));
+
+            // TODO: VOICEROID+では数値を変更するだけでは変更が行われないため何らかの方法が必要
+
         }
         private float GetEffect(EffectType t)
         {

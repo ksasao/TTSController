@@ -65,6 +65,9 @@
       <HintPath>..\packages\Codeer.Friendly.Windows.Grasp.2.5.1\lib\net20\Codeer.Friendly.Windows.Grasp.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RM.Friendly.WPFStandardControls.3.0, Version=1.8.0.0, Culture=neutral, PublicKeyToken=1b8f25b96765ebb0, processorArchitecture=MSIL">
@@ -94,6 +97,7 @@
   <ItemGroup>
     <Compile Include="ISpeechEnumerator.cs" />
     <Compile Include="ISpeechEngine.cs" />
+    <Compile Include="Recorder.cs" />
     <Compile Include="SAPI5Enumerator.cs" />
     <Compile Include="SpeechEngineInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

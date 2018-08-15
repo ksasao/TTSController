@@ -10,7 +10,7 @@ namespace SpeechSample
     class Program
     {
         static string name;
-
+        static Recorder recorder = new Recorder("recoded.wav");
         static void Main(string[] args)
         {
             // 利用可能な音声合成エンジンを列挙
@@ -41,13 +41,14 @@ namespace SpeechSample
             string message = $"音声合成エンジン {engine.Info.EngineName}、{engine.Info.LibraryName}を起動しました。";
             engine.Play(message); // 音声再生は非同期実行される
             Console.WriteLine(message);
-            engine.SetVolume(0.750f);
+            engine.SetVolume(1f);
 
             string line = "";
             do
             {
                 line = Console.ReadLine();
                 engine.Stop(); // 喋っている途中に文字が入力されたら再生をストップ
+                recorder.Start();
                 engine.Play(line); // 音声再生は非同期実行される
                 Console.WriteLine($"Volume: {engine.GetVolume()}, Speed: {engine.GetSpeed()}, Pitch: {engine.GetPitch()}, PitchRange: {engine.GetPitchRange()}");
             } while (line != "");
@@ -58,6 +59,7 @@ namespace SpeechSample
 
         private static void Engine_Finished(object sender, EventArgs e)
         {
+            recorder.Stop();
             Console.WriteLine("* 再生完了 *");
             Console.Write($"{name}> ");
         }
