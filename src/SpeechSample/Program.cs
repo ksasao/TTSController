@@ -41,7 +41,7 @@ namespace SpeechSample
             string message = $"音声合成エンジン {engine.Info.EngineName}、{engine.Info.LibraryName}を起動しました。";
             engine.Play(message); // 音声再生は非同期実行される
             Console.WriteLine(message);
-            engine.SetPitch(1.00f);
+            engine.SetVolume(0.750f);
 
             string line = "";
             do

@@ -76,6 +76,13 @@ namespace Speech
         /// <param name="text">再生する文字列</param>
         public async void Play(string text)
         {
+            text = text ?? "";
+            text = text.Trim();
+            if (text == "")
+            {
+                OnFinished();
+                return;
+            }
             await SpeechAsync(text);
         }
 
@@ -83,7 +90,6 @@ namespace Speech
         {
             await Task.Run(() =>
             {
-                text = text == null ? "" : text;
                 _lastText = text;
                 _spVoice.Speak(text);
                 OnFinished();
@@ -201,6 +207,10 @@ namespace Speech
                 {
                     if(_spVoice != null)
                     {
+                        while(_spVoice.Status.RunningState == SpeechRunState.SRSEIsSpeaking)
+                        {
+                            Thread.Sleep(100);
+                        } 
                         System.Runtime.InteropServices.Marshal.ReleaseComObject(_spVoice);
                     }
                 }
