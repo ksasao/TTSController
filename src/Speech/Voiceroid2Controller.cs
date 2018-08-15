@@ -218,6 +218,7 @@ namespace Speech
         }
         private void SetText(string text)
         {
+            text = text.Trim() == "" ? "." : text;
             string t = _libraryName + _promptString + text;
             if (_queue.Count == 0)
             {

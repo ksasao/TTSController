@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Speech
@@ -14,6 +13,16 @@ namespace Speech
         private WasapiLoopbackCapture _capture = null;
 
         /// <summary>
+        /// 音声合成の完了後に何ミリ秒待ってから録音を終了するか
+        /// </summary>
+        public UInt32 PostWait { get; set; } = 0;
+
+        /// <summary>
+        /// Start()が呼び出されてから何ミリ秒待ってから録音を開始するか
+        /// </summary>
+        public UInt32 PreWait { get; set; } = 0;
+
+        /// <summary>
         /// 出力先のファイル名を取得または設定します
         /// </summary>
         public string OutputPath { get; set; }
@@ -21,7 +30,7 @@ namespace Speech
         {
             OutputPath = filename;
         }
-        public void Start()
+        public async void Start()
         {
             _capture = new WasapiLoopbackCapture();
             _writer = new WaveFileWriter(OutputPath, _capture.WaveFormat);
@@ -35,13 +44,14 @@ namespace Speech
                 _writer.Dispose();
                 _capture.Dispose();
             };
+            await Task.Delay((int)PreWait);
             _capture.StartRecording();
         }
-        public void Stop()
+        public async void Stop()
         {
             if(_capture != null)
             {
-                Thread.Sleep(200);
+                await Task.Delay((int)PostWait);
                 _capture.StopRecording();
             }
         }
