@@ -9,6 +9,8 @@ namespace SpeechSample
 {
     class Program
     {
+        static string name;
+
         static void Main(string[] args)
         {
             // 利用可能な音声合成エンジンを列挙
@@ -21,7 +23,7 @@ namespace SpeechSample
 
             // ライブラリ名を入力(c.LibraryName列)
             Console.Write("\r\nLibrary Name:");
-            string name = Console.ReadLine().Trim();
+            name = Console.ReadLine().Trim();
 
             // 対象となるライブラリを実行
             var engine = SpeechController.GetInstance(name);
@@ -35,7 +37,9 @@ namespace SpeechSample
 
             // 音声合成エンジンを起動
             engine.Activate();
-            engine.Play("こんにちは");
+            string message = $"音声合成エンジン {engine.Info.EngineName}、{engine.Info.LibraryName}を起動しました。";
+            Console.WriteLine(message);
+            engine.Play(message);
             engine.SetPitch(1.00f);
 
             string line = "";
@@ -49,9 +53,12 @@ namespace SpeechSample
             engine.Dispose();
         }
 
+        
+
         private static void Engine_Finished(object sender, EventArgs e)
         {
             Console.WriteLine("* 再生完了 *");
+            Console.Write($"{name}> ");
         }
     }
 }
