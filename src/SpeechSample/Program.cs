@@ -33,22 +33,23 @@ namespace SpeechSample
                 Console.ReadKey();
                 return;
             }
+            // 設定した音声の再生が終了したときに呼び出される処理を設定
             engine.Finished += Engine_Finished;
 
             // 音声合成エンジンを起動
             engine.Activate();
             string message = $"音声合成エンジン {engine.Info.EngineName}、{engine.Info.LibraryName}を起動しました。";
+            engine.Play(message); // 音声再生は非同期実行される
             Console.WriteLine(message);
-            engine.Play(message);
             engine.SetPitch(1.00f);
 
             string line = "";
             do
             {
                 line = Console.ReadLine();
-                Console.WriteLine($"Volume: {engine.GetVolume()}, Speed: {engine.GetSpeed()}, Pitch: {engine.GetPitch()}, PitchRange: {engine.GetPitchRange()}");
                 engine.Stop(); // 喋っている途中に文字が入力されたら再生をストップ
-                engine.Play(line);
+                engine.Play(line); // 音声再生は非同期実行される
+                Console.WriteLine($"Volume: {engine.GetVolume()}, Speed: {engine.GetSpeed()}, Pitch: {engine.GetPitch()}, PitchRange: {engine.GetPitchRange()}");
             } while (line != "");
             engine.Dispose();
         }

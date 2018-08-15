@@ -20,6 +20,7 @@ namespace Speech
     {
         SpVoice _spVoice = null;
         string _voiceName;
+        string _lastText="";
         public SpeechEngineInfo Info { get; private set; }
 
         /// <summary>
@@ -52,12 +53,7 @@ namespace Speech
         /// </summary>
         public void Activate()
         {
-            if (IsActive())
-            {
-
-
-            }
-            else
+            if (!IsActive())
             {
                 _spVoice = new SpVoice();
                 var voice = _spVoice.GetVoices();
@@ -87,22 +83,27 @@ namespace Speech
         {
             await Task.Run(() =>
             {
+                text = text == null ? "" : text;
+                _lastText = text;
                 _spVoice.Speak(text);
                 OnFinished();
             });
 
         }
         /// <summary>
-        /// VOICEROID+ に入力された文字列を再生します
+        /// 最後に入力された文字列を再生します
         /// </summary>
         public void Play()
         {
+            Play(_lastText);
         }
         /// <summary>
-        /// VOICEROID+ の再生を停止します（停止ボタンを押す）
+        /// 再生を停止します
         /// </summary>
         public void Stop()
         {
+            // not implemented
+        //    _spVoice.
         }
 
         enum EffectType { Volume = 8, Speed = 9, Pitch = 10, PitchRange = 11}
@@ -112,15 +113,15 @@ namespace Speech
         /// <param name="value">0.0～2.0</param>
         public void SetVolume(float value)
         {
-            SetEffect(EffectType.Volume, value); 
+            _spVoice.Volume = (int)(value * 100f);
         }
         /// <summary>
         /// 音量を取得します
         /// </summary>
-        /// <returns>音量</returns>
+        /// <returns>音量(0.0～1.0)</returns>
         public float GetVolume()
         {
-            return GetEffect(EffectType.Volume);
+            return _spVoice.Volume / 100f; // SAPI5の音量は0-100で指定
         }
         /// <summary>
         /// 話速を設定します
@@ -128,7 +129,7 @@ namespace Speech
         /// <param name="value">0.5～4.0</param>
         public void SetSpeed(float value)
         {
-            SetEffect(EffectType.Speed,value);
+            _spVoice.Rate = (int)((value - 1f) * 10f);
         }
         /// <summary>
         /// 話速を取得します
@@ -136,7 +137,7 @@ namespace Speech
         /// <returns>話速</returns>
         public float GetSpeed()
         {
-            return GetEffect(EffectType.Speed);
+            return (_spVoice.Rate+10)/10f; //Rate: -10 ～ 10 (default:0)
         }
 
         /// <summary>
