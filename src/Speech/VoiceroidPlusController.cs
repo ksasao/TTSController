@@ -23,7 +23,7 @@ namespace Speech
         WindowsAppFriend _app;
         Process _process;
         WindowControl _root;
-        DispatcherTimer dispatcherTimer; // 状態監視のためのタイマー
+        System.Timers.Timer _timer; // 状態監視のためのタイマー
         bool _playStarting = false;
 
         [DllImport("User32.dll")]
@@ -43,19 +43,18 @@ namespace Speech
         {
             Info = info;
             VoiceroidPath = info.EnginePath;
-            dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100); // 100ミリ秒ごとにチェック
-            dispatcherTimer.Tick += DispatcherTimer_Tick;
+            _timer = new System.Timers.Timer(100);
+            _timer.Elapsed += timer_Elapsed;
         }
 
-        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        private void timer_Elapsed(object sender, EventArgs e)
         {
             WindowControl playButton = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 1, 0, 3);
             AppVar button = playButton.AppVar;
             string text = (string)button["Text"]().Core;
             if (!_playStarting && text.Trim() == "再生")
             {
-                dispatcherTimer.Stop();
+                _timer.Stop();
                 OnFinished();
             }
             _playStarting = false;
@@ -130,7 +129,7 @@ namespace Speech
             {
                 button["PerformClick"]();
                 _playStarting = true;
-                dispatcherTimer.Start();
+                _timer.Start();
             }
         }
         /// <summary>
