@@ -36,7 +36,7 @@ namespace Speech
         public SAPI5Controller(SpeechEngineInfo info)
         {
             Info = info;
-            _voiceName = info.EngineName;
+            _voiceName = info.LibraryName;
         }
 
         /// <summary>
