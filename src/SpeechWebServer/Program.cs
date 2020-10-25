@@ -30,17 +30,17 @@ namespace SpeechWebServer
             listener.Start();
             while (true)
             {
+                HttpListenerResponse response = null;
                 try
                 {
                     HttpListenerContext context = listener.GetContext();
                     HttpListenerRequest request = context.Request;
-                    HttpListenerResponse response = context.Response;
+                    response = context.Response;
 
                     if (context.Request.Url.AbsoluteUri.EndsWith("favicon.ico"))
                     {
                         // favicon は無視
                         response.StatusCode = 404;
-                        response.Close();
                         continue;
                     }
                     var queryString = HttpUtility.ParseQueryString(context.Request.Url.Query);
@@ -56,7 +56,6 @@ namespace SpeechWebServer
                         voiceName = queryString["name"];
                     }
 
-
                     Console.WriteLine("=> " + context.Request.RemoteEndPoint.Address);
                     Console.WriteLine($"<= [{voiceName}] {voiceText}");
 
@@ -65,12 +64,15 @@ namespace SpeechWebServer
                     byte[] content = Encoding.UTF8.GetBytes(voiceText);
                     
                     response.OutputStream.Write(content, 0, content.Length);
-                    response.Close();
                     OneShotPlayMode(voiceName, voiceText);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error: " + ex.Message);
+                }
+                finally
+                {
+                    response.Close();
                 }
             }
         }
@@ -91,7 +93,6 @@ namespace SpeechWebServer
             if (engine == null)
             {
                 Console.WriteLine($"{libraryName} を起動できませんでした。");
-                Console.ReadKey();
                 return;
             }
             engine.Activate();
