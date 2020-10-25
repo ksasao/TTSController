@@ -1,4 +1,5 @@
-﻿using Speech;
+﻿using AudioSwitcher.AudioApi.CoreAudio;
+using Speech;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,13 @@ namespace SpeechWebServer
     class Program
     {
         static string name;
+        static IEnumerable<CoreAudioDevice> devices;
+        static int port = 1000;
 
         static void Main(string[] args)
         {
+
+            // インストール済み音声合成ライブラリの列挙
             var names = GetLibraryName();
             Console.WriteLine("インストール済み音声合成ライブラリ");
             Console.WriteLine("-----");
@@ -23,10 +28,43 @@ namespace SpeechWebServer
             {
                 Console.WriteLine(s);
             }
+            Console.WriteLine("-----");
+
+            // 接続先スピーカーの列挙
+            Console.WriteLine("接続先スピーカー");
+            Console.WriteLine("-----");
+            devices = new CoreAudioController().GetPlaybackDevices();
+            string speaker = (devices.ToArray())[0].FullName;
+            foreach (var d in devices)
+            {
+                Console.WriteLine($"{d.FullName}");
+            }
+            Console.WriteLine("-----");
+
+            // 待ち受けIPアドレス
+            Console.WriteLine("接続先");
+            Console.WriteLine("-----");
+            string hostname = Dns.GetHostName();
+            IPAddress[] adrList = Dns.GetHostAddresses(hostname);
+            foreach (IPAddress address in adrList)
+            {
+                if(address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    // IPv4
+                    Console.WriteLine($"http://{address.ToString()}:{port}");
+                }
+                else if(address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6
+                    && !address.IsIPv6LinkLocal)
+                {
+                    // IPv6
+                    Console.WriteLine($"http://[{address.ToString()}]:{port}");
+                }
+            }
+            Console.WriteLine($"待機中...");
 
             var defaultName = names[0];
             HttpListener listener = new HttpListener();
-            listener.Prefixes.Add("http://*:1000/");
+            listener.Prefixes.Add($"http://*:{port}/");
             listener.Start();
             while (true)
             {
@@ -55,9 +93,17 @@ namespace SpeechWebServer
                     {
                         voiceName = queryString["name"];
                     }
+                    string location = "";
+                    if (queryString["speaker"] != null)
+                    {
+                        speaker = queryString["speaker"];
+                        ChangeSpeaker(speaker);
+                        location = $"@{speaker}";
+                    }
+
 
                     Console.WriteLine("=> " + context.Request.RemoteEndPoint.Address);
-                    Console.WriteLine($"<= [{voiceName}] {voiceText}");
+                    Console.WriteLine($"<= [{voiceName}{location}] {voiceText}");
 
                     response.StatusCode = 200;
                     response.ContentType = "text/plain; charset=utf-8";
@@ -124,6 +170,20 @@ namespace SpeechWebServer
             };
             recorder.Start();
             engine.Play(text);
+        }
+        private static void ChangeSpeaker(string name)
+        {
+            var speakers = (from c in devices
+                            where c.FullName.IndexOf(name) >= 0
+                            select c).ToArray();
+            if (speakers.Length > 0)
+            {
+                speakers[0].SetAsDefault();
+            }
+            else
+            {
+                Console.WriteLine("Speaker not found.");
+            }
         }
     }
 }
