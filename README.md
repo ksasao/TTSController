@@ -1,8 +1,17 @@
 # TTSController
-各種 Text-to-Speech エンジンを統一的に操作するライブラリです。
+各種 Text-to-Speech エンジンを統一的に操作するライブラリです。VOICEROIDなどを自動化する簡易Webサーバもあります。
 
 ## 対応プラットフォーム
 - Windows 10 (64bit)
+
+## ブラウザで音声合成する
+### 準備
+- SpeechWebServer のプロジェクトを Visual Studio 2019 でビルドして実行します(管理者権限が必要です)
+
+### 利用方法
+- ブラウザで http://localhost:1000/ を開くと現在の時刻を発話します
+- ブラウザで http://localhost:1000/text=こんにちは を開くと「こんにちは」と発話します。「こんにちは」の部分は任意の文字列を指定できます
+- VOICEROID+ 東北きりたんがインストールされている場合、http://localhost:1000/name=東北きりたん&text=こんばんは を開くと東北きりたんの声で発話します。他の VOICEROID を利用する場合は適宜 name の引数を変更してください。
 
 ## TODO
 
