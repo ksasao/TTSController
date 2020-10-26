@@ -29,6 +29,7 @@
 
 - [x] VOICEROID+ EX
 - [x] VOICEROID2
+- [x] 音街ウナTalk Ex
 - [ ] CeVIO
 - [x] SAPI5 (おまけ程度)
 
