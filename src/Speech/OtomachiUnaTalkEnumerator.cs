@@ -18,7 +18,7 @@ namespace Speech
             public string Path { get; internal set; }
         }
         Data[] _info;
-        public const string EngineName = "OtomachiUna_Talk";
+        public const string EngineName = "OtomachiUna_Talk_Ex";
 
         public OtomachiUnaTalkEnumerator()
         {

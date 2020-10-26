@@ -118,7 +118,7 @@ namespace Speech
             Play();
         }
         /// <summary>
-        /// VOICEROID+ に入力された文字列を再生します
+        /// 音街ウナTalk に入力された文字列を再生します
         /// </summary>
         public void Play()
         {
@@ -133,7 +133,7 @@ namespace Speech
             }
         }
         /// <summary>
-        /// VOICEROID+ の再生を停止します（停止ボタンを押す）
+        /// 音街ウナTalk の再生を停止します（停止ボタンを押す）
         /// </summary>
         public void Stop()
         {
@@ -219,7 +219,7 @@ namespace Speech
             v["Focus"]();
             v["Text"](string.Format("{0:0.00}", value));
 
-            // TODO: VOICEROID+では数値を変更するだけでは変更が行われないため何らかの方法が必要
+            // TODO: 音街ウナTalkでは数値を変更するだけでは変更が行われないため何らかの方法が必要
 
         }
         private float GetEffect(EffectType t)
