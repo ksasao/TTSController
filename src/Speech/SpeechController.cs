@@ -25,7 +25,12 @@ namespace Speech
             {
                 info.AddRange(voiceroid2.GetSpeechEngineInfo());
             }
-
+            // 音街ウナTalkEx を列挙
+            var otomachi = new OtomachiUnaTalkEnumerator();
+            if (otomachi.GetSpeechEngineInfo().Length > 0)
+            {
+                info.AddRange(otomachi.GetSpeechEngineInfo());
+            }
             // SAPI5 を列挙
             var sapi5 = new SAPI5Enumerator();
             info.AddRange(sapi5.GetSpeechEngineInfo());
@@ -54,6 +59,8 @@ namespace Speech
                     return new VoiceroidPlusController(info);
                 case Voiceroid2Enumerator.EngineName:
                     return new Voiceroid2Controller(info);
+                case OtomachiUnaTalkEnumerator.EngineName:
+                    return new OtomachiUnaTalkController(info);
                 case SAPI5Enumerator.EngineName:
                     return new SAPI5Controller(info);
                 default:

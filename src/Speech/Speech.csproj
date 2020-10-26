@@ -105,7 +105,9 @@
     <Compile Include="SpeechController.cs" />
     <Compile Include="Voiceroid2Controller.cs" />
     <Compile Include="Voiceroid2Enumerator.cs" />
+    <Compile Include="OtomachiUnaTalkController.cs" />
     <Compile Include="VoiceroidPlusController.cs" />
+    <Compile Include="OtomachiUnaTalkEnumerator.cs" />
     <Compile Include="VoiceroidPlusEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
