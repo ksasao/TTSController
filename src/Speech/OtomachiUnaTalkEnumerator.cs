@@ -20,18 +20,10 @@ namespace Speech
         Data[] _info;
         public const string EngineName = "OtomachiUna_Talk_Ex";
 
+
         public OtomachiUnaTalkEnumerator()
         {
             Initialize();
-        }
-        public SpeechEngineInfo[] GetSpeechEngineInfo()
-        {
-            List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
-            foreach (var v in _info)
-            {
-                info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = v.Path, LibraryName = v.Name });
-            }
-            return info.ToArray();
         }
         private void Initialize()
         {
@@ -48,6 +40,22 @@ namespace Speech
             }
             _info = data.ToArray();
         }
+
+        public SpeechEngineInfo[] GetSpeechEngineInfo()
+        {
+            List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
+            foreach (var v in _info)
+            {
+                info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = v.Path, LibraryName = v.Name });
+            }
+            return info.ToArray();
+        }
+        public ISpeechEngine GetControllerInstance(SpeechEngineInfo info)
+        {
+            return EngineName == info.EngineName ? new OtomachiUnaTalkController(info) : null;
+        }
+
+
 
     }
 }

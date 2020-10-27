@@ -8,33 +8,21 @@ namespace Speech
 {
     public class SpeechController
     {
+        static ISpeechEnumerator[] speechEnumerator =
+        {
+            new VoiceroidPlusEnumerator(),
+            new Voiceroid2Enumerator(),
+            new OtomachiUnaTalkEnumerator(),
+            new SAPI5Enumerator()
+        };
         public static SpeechEngineInfo[] GetAllSpeechEngine()
         {
             List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
 
-            // VOICEROID+ を列挙
-            var voiceroidPlus = new VoiceroidPlusEnumerator();
-            if(voiceroidPlus.GetSpeechEngineInfo().Length > 0)
+            foreach(var se in speechEnumerator)
             {
-                info.AddRange(voiceroidPlus.GetSpeechEngineInfo());
+                info.AddRange(se.GetSpeechEngineInfo());
             }
-
-            // VOICEROID2 を列挙
-            var voiceroid2 = new Voiceroid2Enumerator();
-            if(voiceroid2.GetSpeechEngineInfo().Length > 0)
-            {
-                info.AddRange(voiceroid2.GetSpeechEngineInfo());
-            }
-            // 音街ウナTalkEx を列挙
-            var otomachi = new OtomachiUnaTalkEnumerator();
-            if (otomachi.GetSpeechEngineInfo().Length > 0)
-            {
-                info.AddRange(otomachi.GetSpeechEngineInfo());
-            }
-            // SAPI5 を列挙
-            var sapi5 = new SAPI5Enumerator();
-            info.AddRange(sapi5.GetSpeechEngineInfo());
-
             return info.ToArray();
         }
 
@@ -53,18 +41,13 @@ namespace Speech
 
         public static ISpeechEngine GetInstance(SpeechEngineInfo info)
         {
-            switch (info.EngineName)
+            foreach(var i in speechEnumerator)
             {
-                case VoiceroidPlusEnumerator.EngineName:
-                    return new VoiceroidPlusController(info);
-                case Voiceroid2Enumerator.EngineName:
-                    return new Voiceroid2Controller(info);
-                case OtomachiUnaTalkEnumerator.EngineName:
-                    return new OtomachiUnaTalkController(info);
-                case SAPI5Enumerator.EngineName:
-                    return new SAPI5Controller(info);
-                default:
-                    break;
+                var controller = i.GetControllerInstance(info);
+                if(controller != null)
+                {
+                    return controller;
+                }
             }
             return null;
         }

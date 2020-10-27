@@ -13,7 +13,6 @@ namespace SpeechWebServer
 {
     class Program
     {
-        static string name;
         static IEnumerable<CoreAudioDevice> devices;
         static int port = 1000;
 

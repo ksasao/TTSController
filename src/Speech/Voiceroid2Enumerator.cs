@@ -19,6 +19,50 @@ namespace Speech
             Initialize();
         }
 
+        private void Initialize()
+        {
+            // VOICEROID2 の一覧は下記で取得できる
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                + @"\AHS\VOICEROID\2.0\Standard.settings";
+            if (File.Exists(path))
+            {
+                List<string> presetName = new List<string>();
+                try
+                {
+                    var xml = XElement.Load(path);
+
+                    // 話者を識別するための記号。デフォルトは「＞」。「紲星あかり＞」などと指定する。
+                    PromptString = (from c in xml.Elements("VoicePreset").Elements("PromptString")
+                                    select c.Value).ToArray()[0];
+
+                    // インストール済み話者一覧
+                    presetName.AddRange(from c in xml.Elements("VoicePreset").Elements("VoicePresets").Elements("VoicePreset").Elements("PresetName")
+                                        select c.Value);
+
+                    // ユーザが追加・変更した話者一覧
+                    string isSpecialFolderEnabled = (from c in xml.Elements("VoicePreset").Elements("VoicePresetFilePath").Elements("IsSpecialFolderEnabled")
+                                                     select c.Value).ToArray()[0];
+                    string partialPath = (from c in xml.Elements("VoicePreset").Elements("VoicePresetFilePath").Elements("PartialPath")
+                                          select c.Value).ToArray()[0];
+                    string userPresetPath = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.Personal)
+                        , partialPath);
+                    if (isSpecialFolderEnabled == "false")
+                    {
+                        userPresetPath = partialPath;
+                    }
+                    var userXml = XElement.Load(userPresetPath);
+                    presetName.AddRange(from c in userXml.Elements("VoicePreset").Elements("PresetName")
+                                        select c.Value);
+
+                    _name = presetName.ToArray();
+                }
+                catch
+                {
+                    PromptString = "";
+                }
+            }
+        }
         public SpeechEngineInfo[] GetSpeechEngineInfo()
         {
             List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
@@ -53,52 +97,11 @@ namespace Speech
             return result;
         }
 
-        private void Initialize()
+
+        public ISpeechEngine GetControllerInstance(SpeechEngineInfo info)
         {
-            // VOICEROID2 の一覧は下記で取得できる
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                + @"\AHS\VOICEROID\2.0\Standard.settings";
-            if (File.Exists(path))
-            {
-                List<string> presetName = new List<string>();
-                try
-                {
-                    var xml = XElement.Load(path);
-
-                    // 話者を識別するための記号。デフォルトは「＞」。「紲星あかり＞」などと指定する。
-                    PromptString = (from c in xml.Elements("VoicePreset").Elements("PromptString")
-                                    select c.Value).ToArray()[0];
-
-                    // インストール済み話者一覧
-                    presetName.AddRange(from c in xml.Elements("VoicePreset").Elements("VoicePresets").Elements("VoicePreset").Elements("PresetName")
-                                        select c.Value);
-
-                    // ユーザが追加・変更した話者一覧
-                    string isSpecialFolderEnabled = (from c in xml.Elements("VoicePreset").Elements("VoicePresetFilePath").Elements("IsSpecialFolderEnabled")
-                                          select c.Value).ToArray()[0];
-                    string partialPath = (from c in xml.Elements("VoicePreset").Elements("VoicePresetFilePath").Elements("PartialPath")
-                                          select c.Value).ToArray()[0] ;
-                    string userPresetPath = Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.Personal)
-                        ,partialPath);
-                    if(isSpecialFolderEnabled == "false")
-                    {
-                        userPresetPath = partialPath;
-                    }
-                    var userXml = XElement.Load(userPresetPath);
-                    presetName.AddRange(from c in userXml.Elements("VoicePreset").Elements("PresetName")
-                                        select c.Value);
-
-                    _name = presetName.ToArray();
-                }
-                catch
-                {
-                    PromptString = "";
-                }
-            }
+            return EngineName == info.EngineName ? new Voiceroid2Controller(info) : null;
         }
-
-
     }
 
 }

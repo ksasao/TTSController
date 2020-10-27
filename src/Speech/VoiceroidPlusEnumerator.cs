@@ -24,15 +24,7 @@ namespace Speech
         {
             Initialize();
         }
-        public SpeechEngineInfo[] GetSpeechEngineInfo()
-        {
-            List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
-            foreach (var v in _info)
-            {
-                info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = v.Path, LibraryName = v.Name });
-            }
-            return info.ToArray();
-        }
+
         private void Initialize()
         {
             // VOICEROID の一覧は下記で取得できる
@@ -66,6 +58,20 @@ namespace Speech
                 // 初期化に途中で失敗した場合はうまく処理できたところまで返す
             }
             _info = data.ToArray();
+        }
+
+        public SpeechEngineInfo[] GetSpeechEngineInfo()
+        {
+            List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
+            foreach (var v in _info)
+            {
+                info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = v.Path, LibraryName = v.Name });
+            }
+            return info.ToArray();
+        }
+        public ISpeechEngine GetControllerInstance(SpeechEngineInfo info)
+        {
+            return EngineName == info.EngineName ? new VoiceroidPlusController(info) : null;
         }
 
     }
