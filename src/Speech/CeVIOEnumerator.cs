@@ -34,14 +34,14 @@ namespace Speech
             if (File.Exists(cevioCS7Path + @"\CeVIO Creative Studio.exe"))
             {
                 cevioPath = cevioCS7Path;
-                AssemblyPath = cevioPath + @"\CeVIO.Talk.RemoteService.dll";
             }
             else if(File.Exists(cevioCS6Path + @"\CeVIO Creative Studio.exe"))
             {
                 cevioPath = cevioCS6Path;
             }
-            if(cevioPath != "")
+            if (cevioPath != "")
             {
+                AssemblyPath = cevioPath + @"\CeVIO.Talk.RemoteService.dll";
                 _installedPath = cevioPath + @"\CeVIO Creative Studio.exe";
                 // CeVIOを起動せずにインストールされた音源一覧を取得する
                 string[] talkDirectory = Directory.GetDirectories(Path.Combine(cevioPath, @"Configuration\VocalSource\Talk"));

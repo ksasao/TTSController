@@ -33,14 +33,14 @@ namespace Speech
             {
                 var v = voice.Item(i);
                 string id = v.Id.ToString().Substring(v.Id.LastIndexOf('\\')+1);
-                /*
+                
                 if (id.StartsWith("CeVIO"))
                 {
                     // CeVIOは 64bit Windows での SAPI経由での動作保証をしていないためスキップ
                     // http://guide2.project-cevio.com/interface
                     continue;
                 }
-                */
+                
                 sapi5.Add(new Data { Name = id, Path = "" });
             }
             _info = sapi5.ToArray();
