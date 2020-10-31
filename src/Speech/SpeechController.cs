@@ -13,6 +13,7 @@ namespace Speech
             new VoiceroidPlusEnumerator(),
             new Voiceroid2Enumerator(),
             new OtomachiUnaTalkEnumerator(),
+            new CeVIOEnumerator(),
             new SAPI5Enumerator()
         };
         public static SpeechEngineInfo[] GetAllSpeechEngine()

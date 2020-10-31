@@ -2,12 +2,13 @@
 各種 Text-to-Speech エンジンを統一的に操作するライブラリです。VOICEROIDなどを自動化する簡易Webサーバもあります。
 
 ## 対応プラットフォーム
-- Windows 10 (64bit)
+- Windows 10 (32bit/64bit)
 
 ## 対応音声合成ライブラリ
 - VOICEROID+ 各種
 - VOICEROID2 各種
 - 音街ウナTalkEx
+- CeVIO CS6 / CS7
 - SAPI5 (Windows10標準の音声合成機能。スタートメニュー>設定>時刻と言語>音声認識>音声の管理>音声の追加から各国語の音声が追加できます。API仕様により追加しても列挙されない音声があります。)
 
 ## ブラウザで音声合成する
@@ -30,7 +31,7 @@
 - [x] VOICEROID+ EX
 - [x] VOICEROID2
 - [x] 音街ウナTalk Ex
-- [ ] CeVIO
+- [x] CeVIO
 - [x] SAPI5 (おまけ程度)
 
 ### 制御機能
