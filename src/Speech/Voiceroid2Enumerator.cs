@@ -22,6 +22,8 @@ namespace Speech
         private void Initialize()
         {
             // VOICEROID2 の一覧は下記で取得できる
+            // 下記ファイルは VOICEROID2 終了時に生成されるため、一度 VOICEROID2 を起動・終了
+            // しておくこと
             string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
                 + @"\AHS\VOICEROID\2.0\Standard.settings";
             if (File.Exists(path))

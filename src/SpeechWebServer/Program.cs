@@ -87,6 +87,7 @@ namespace SpeechWebServer
                     if (queryString["text"] != null)
                     {
                         voiceText = queryString["text"];
+                        voiceText = voiceText.Replace("{time}", DateTime.Now.ToString("HH時 mm分 ss秒"));
                     }
                     if (queryString["name"] != null)
                     {

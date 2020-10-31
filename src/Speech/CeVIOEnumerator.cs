@@ -37,6 +37,8 @@ namespace Speech
             }
             else if(File.Exists(cevioCS6Path + @"\CeVIO Creative Studio.exe"))
             {
+
+
                 cevioPath = cevioCS6Path;
             }
             if (cevioPath != "")

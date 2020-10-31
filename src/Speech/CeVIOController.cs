@@ -27,10 +27,6 @@ namespace Speech
         public SpeechEngineInfo Info { get; private set; }
 
         string _libraryName;
-        string _promptString;
-        bool _isPlaying = false;
-        bool _isRunning = false;
-        double _tickCount = 0;
         dynamic _talker = null;
         Assembly _assembly;
         Type _serviceControl;
@@ -56,7 +52,7 @@ namespace Speech
         }
 
         /// <summary>
-        /// Voiceroid が起動中かどうかを確認
+        /// CeVIO が起動中かどうかを確認
         /// </summary>
         /// <returns>起動中であれば true</returns>
         public bool IsActive()
@@ -72,7 +68,7 @@ namespace Speech
         }
 
         /// <summary>
-        /// Voiceroidを起動する。すでに起動している場合には起動しているものを操作対象とする。
+        /// CeVIO を起動する。すでに起動している場合には起動しているものを操作対象とする。
         /// </summary>
         public void Activate()
         {
