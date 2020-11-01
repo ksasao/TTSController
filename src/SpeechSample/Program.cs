@@ -51,6 +51,7 @@ namespace SpeechSample
                     }
                     if (opt.Speaker != null)
                     {
+                        devices = new CoreAudioController().GetPlaybackDevices();
                         speaker = opt.Speaker;
                         ChangeSpeaker(speaker);
                     }
