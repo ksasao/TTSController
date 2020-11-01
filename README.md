@@ -14,7 +14,7 @@
 ## ブラウザで音声合成する
 この実装は簡易実装であり、音声合成ライブラリと同一のPC上で実行することを想定しています。インターネット上への公開は、セキュリティ上のリスクや音声合成ライブラリのライセンス上の問題がある可能性があります。
 
-- [ビルド済み実行ファイル(v0.0.2beta)](https://github.com/ksasao/TTSController/releases/download/v0.0.2beta/SpeechWebServer_v0.0.2beta.zip) (2020/10/26更新)
+- [ビルド済み実行ファイル(v0.0.3beta)](https://github.com/ksasao/TTSController/releases/download/v0.0.3beta/SpeechWebServer_v0.0.3.zip) (2020/10/31更新)
 
 ### 準備
 - SpeechWebServer のプロジェクトを Visual Studio 2019 でビルドして ```SpeechWebServer.exe``` を実行します(管理者権限が必要です)
