@@ -35,14 +35,14 @@ namespace Speech
         /// <summary>
         /// 音街ウナTalk Ex のフルパス
         /// </summary>
-        public string VoiceroidPath { get; private set; }
+        public string OtomachiUnaPath { get; private set; }
 
         public SpeechEngineInfo Info { get; private set; }
 
         public OtomachiUnaTalkController(SpeechEngineInfo info)
         {
             Info = info;
-            VoiceroidPath = info.EnginePath;
+            OtomachiUnaPath = info.EnginePath;
             _timer = new System.Timers.Timer(100);
             _timer.Elapsed += timer_Elapsed;
         }
@@ -76,11 +76,11 @@ namespace Speech
         /// <returns>起動中であれば true</returns>
         public bool IsActive()
         {
-            string name = Path.GetFileNameWithoutExtension(VoiceroidPath);
+            string name = Path.GetFileNameWithoutExtension(OtomachiUnaPath);
             Process[] localByName = Process.GetProcessesByName(name);
             foreach(var p in localByName)
             {
-                if(p.MainModule.FileName == VoiceroidPath)
+                if(p.MainModule.FileName == OtomachiUnaPath)
                 {
                     _process = p;
                     return true;
@@ -100,7 +100,7 @@ namespace Speech
             }
             else
             {
-                _process = Process.Start(VoiceroidPath);
+                _process = Process.Start(OtomachiUnaPath);
                 _app = new WindowsAppFriend(_process);
             }
             _root = WindowControl.GetTopLevelWindows(_app)[0];
