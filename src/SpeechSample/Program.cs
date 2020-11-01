@@ -1,35 +1,97 @@
-﻿using Speech;
+﻿using CommandLine;
+using AudioSwitcher.AudioApi.CoreAudio;
+using Speech;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace SpeechSample
 {
     class Program
     {
+        static IEnumerable<CoreAudioDevice> devices;
+
         static string name;
         static bool finished = false;
         static void Main(string[] args)
         {
-            switch (args.Length)
+            try
             {
-                case 2:
-                    OneShotPlayMode(args[0], args[1]);
-                    break;
-                case 3:
-                    RecordMode(args[0], args[1], args[2]);
-                    break;
-                default:
-                    InteractiveMode();
-                    return;
-            }
-            while (!finished)
+                Parser.Default.ParseArguments<Options>(args)
+                .WithParsed(opt =>
+                {
+                    string[] voices = GetLibraryName();
+                    DateTime now = DateTime.Now;
+                    string date = now.ToString("yyyy年 MM月 dd日");
+                    string time = now.ToString("HH時 mm分 ss秒");
+                    string text = time + "です。";
+
+                    string name = voices[0];
+                    string speaker = "";
+                    string output = "";
+
+                    bool interactiveMode = true;
+                    if (opt.Verbose)
+                    {
+                        ShowVerbose();
+                        return;
+                    }
+                    if (opt.Text != null)
+                    {
+                        interactiveMode = false;
+                        text = opt.Text.Replace("{date}", date).Replace("{time}",time);
+                    }
+                    if (opt.Name != null)
+                    {
+                        interactiveMode = false;
+                        name = opt.Name;
+                    }
+                    if (opt.Speaker != null)
+                    {
+                        speaker = opt.Speaker;
+                        ChangeSpeaker(speaker);
+                    }
+                    if (opt.Output != null)
+                    {
+                        interactiveMode = false;
+                        output = opt.Output;
+                    }
+                    if (interactiveMode)
+                    {
+                        InteractiveMode();
+                        return;
+                    }
+                    if (output == "")
+                    {
+                        OneShotPlayMode(name, text);
+                    }
+                    else
+                    {
+                        RecordMode(name, text, output);
+                    }
+                    while (!finished)
+                    {
+                        Task.Delay(100);
+                    }
+                });
+            }catch (Exception ex)
             {
-                Task.Delay(100);
+                Console.WriteLine(ex.Message);
+                return;
             }
         }
+
+        private static string[] GetLibraryName()
+        {
+            var engines = SpeechController.GetAllSpeechEngine();
+            var names = from c in engines
+                        select c.LibraryName;
+            return names.ToArray();
+        }
+
         private static void OneShotPlayMode(string libraryName, string text)
         {
 
@@ -75,16 +137,7 @@ namespace SpeechSample
         }
         private static void InteractiveMode()
         {
-            // 利用可能な音声合成エンジンを列挙
-            // Windows 10 (x64) 上での VOICEROID+, VOICEROID2, SAPI5 に対応
-            // CeVIO(SAPI5) は Windows 10 (x64) では動作しないため表示されません
-            Console.WriteLine("* 利用可能な音声合成エンジン *\r\n");
-            Console.WriteLine("LibraryName,EngineName,EnginePath");
-            var engines = SpeechController.GetAllSpeechEngine();
-            foreach (var c in engines)
-            {
-                Console.WriteLine($"{c.LibraryName},{c.EngineName},{c.EnginePath}");
-            }
+            ShowVerbose();
 
             // ライブラリ名を入力(c.LibraryName列)
             Console.Write("\r\nLibraryName> ");
@@ -123,11 +176,48 @@ namespace SpeechSample
             }
         }
 
-
+        private static void ChangeSpeaker(string name)
+        {
+            var speakers = (from c in devices
+                            where c.FullName.IndexOf(name) >= 0
+                            select c).ToArray();
+            if (speakers.Length > 0)
+            {
+                speakers[0].SetAsDefault();
+            }
+            else
+            {
+                Console.WriteLine("Speaker not found.");
+            }
+        }
         private static void Engine_Finished(object sender, EventArgs e)
         {
             Console.WriteLine("* 再生完了 *");
             Console.Write($"{name}> ");
+        }
+
+        private static void ShowVerbose()
+        {
+            // インストール済み音声合成ライブラリの列挙
+            var names = GetLibraryName();
+            Console.WriteLine("インストール済み音声合成ライブラリ");
+            Console.WriteLine("-----");
+            foreach (var s in names)
+            {
+                Console.WriteLine(s);
+            }
+            Console.WriteLine("-----");
+
+            // 接続先スピーカーの列挙
+            Console.WriteLine("接続先スピーカー");
+            Console.WriteLine("-----");
+            devices = new CoreAudioController().GetPlaybackDevices();
+            string speaker = (devices.ToArray())[0].FullName;
+            foreach (var d in devices)
+            {
+                Console.WriteLine($"{d.FullName}");
+            }
+            Console.WriteLine("-----");
         }
     }
 }

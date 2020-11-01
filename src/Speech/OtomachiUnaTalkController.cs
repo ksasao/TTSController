@@ -33,7 +33,7 @@ namespace Speech
 
 
         /// <summary>
-        /// Voiceroid のフルパス
+        /// 音街ウナTalk Ex のフルパス
         /// </summary>
         public string VoiceroidPath { get; private set; }
 
@@ -71,7 +71,7 @@ namespace Speech
         }
 
         /// <summary>
-        /// Voiceroid が起動中かどうかを確認
+        /// 起動中かどうかを確認
         /// </summary>
         /// <returns>起動中であれば true</returns>
         public bool IsActive()
@@ -90,7 +90,7 @@ namespace Speech
         }
 
         /// <summary>
-        /// Voiceroidを起動する。すでに起動している場合には起動しているものを操作対象とする。
+        /// 起動する。すでに起動している場合には起動しているものを操作対象とする。
         /// </summary>
         public void Activate()
         {
