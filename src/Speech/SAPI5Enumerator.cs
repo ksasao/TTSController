@@ -1,9 +1,9 @@
-﻿using SpeechLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Speech.Synthesis;
 
 namespace Speech
 {
@@ -18,7 +18,7 @@ namespace Speech
 
         Data[] _info;
 
-        SpVoice _spVoice = null;
+        SpeechSynthesizer synthesizer = null;
         public SAPI5Enumerator()
         {
             Initialize();
@@ -27,21 +27,19 @@ namespace Speech
         private void Initialize()
         {
             List<Data> sapi5 = new List<Data>();
-            _spVoice = new SpVoice();
-            var voice = _spVoice.GetVoices();
+
+            synthesizer = new SpeechSynthesizer();
+            var voice = synthesizer.GetInstalledVoices();
             for (int i = 0; i < voice.Count; i++)
             {
-                var v = voice.Item(i);
-                string id = v.Id.ToString().Substring(v.Id.LastIndexOf('\\')+1);
-                
-                if (id.StartsWith("CeVIO"))
+                var v = voice[i].VoiceInfo.Name;
+                if (v.StartsWith("CeVIO"))
                 {
                     // CeVIOは 64bit Windows での SAPI経由での動作保証をしていないためスキップ
                     // http://guide2.project-cevio.com/interface
                     continue;
                 }
-                
-                sapi5.Add(new Data { Name = id, Path = "" });
+                sapi5.Add(new Data { Name = v, Path = "" });
             }
             _info = sapi5.ToArray();
         }

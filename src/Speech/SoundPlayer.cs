@@ -25,6 +25,7 @@ namespace Speech
          //   throw new NotImplementedException();
         }
 
+
         /// <summary>
         /// 無音をスピーカーに出力します。Bluetoothスピーカーなど停止状態から
         /// 音声が正常に再生されるようになるまで一定時間音声出力が必要なもの
