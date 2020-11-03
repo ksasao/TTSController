@@ -89,7 +89,9 @@ namespace Speech
         /// <param name="text">再生する文字列</param>
         public void Play(string text)
         {
-            _talker.Speak(text);
+            var state = _talker.Speak(text);
+            state.Wait();
+            OnFinished();
         }
 
         /// <summary>
@@ -217,7 +219,7 @@ namespace Speech
                     // CeVIO を終了する場合はコメントを外す
                     MethodInfo closeHost = _serviceControl.GetMethod("CloseHost");
                     var hostCloseMode = _assembly.GetType("CeVIO.Talk.RemoteService.HostCloseMode");
-                    var mode = Enum.Parse(hostCloseMode, "Default"); // Default, Interrupt, NotCancelable
+                    var mode = Enum.Parse(hostCloseMode, "Interrupt"); // Default, Interrupt, NotCancelable
                     closeHost.Invoke(null, new object[] { mode });
                 }
                 disposedValue = true;
