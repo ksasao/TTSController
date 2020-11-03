@@ -115,7 +115,7 @@ namespace SpeechSample
         }
         public static void RecordMode(string libraryName, string text, string outputFilename)
         {
-            Recorder recorder = new Recorder(outputFilename);
+            SoundRecorder recorder = new SoundRecorder(outputFilename);
             recorder.PostWait = 300;
 
             var engines = SpeechController.GetAllSpeechEngine();

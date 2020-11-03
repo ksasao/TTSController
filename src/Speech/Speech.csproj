@@ -97,8 +97,9 @@
   <ItemGroup>
     <Compile Include="ISpeechEnumerator.cs" />
     <Compile Include="ISpeechEngine.cs" />
-    <Compile Include="Recorder.cs" />
+    <Compile Include="SoundRecorder.cs" />
     <Compile Include="SAPI5Enumerator.cs" />
+    <Compile Include="SoundPlayer.cs" />
     <Compile Include="SpeechEngineInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SAPI5Controller.cs" />

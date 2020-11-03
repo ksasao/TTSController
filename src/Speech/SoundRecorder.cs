@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Speech
 {
-    public class Recorder
+    public class SoundRecorder
     {
         private WaveFileWriter _writer = null;
         private WasapiLoopbackCapture _capture = null;
@@ -26,7 +26,7 @@ namespace Speech
         /// 出力先のファイル名を取得または設定します
         /// </summary>
         public string OutputPath { get; set; }
-        public Recorder(string filename)
+        public SoundRecorder(string filename)
         {
             OutputPath = filename;
         }

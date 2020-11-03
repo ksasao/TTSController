@@ -133,7 +133,6 @@ namespace SpeechWebServer
 
         private static void OneShotPlayMode(string libraryName, string text)
         {
-
             var engines = SpeechController.GetAllSpeechEngine();
             var engine = SpeechController.GetInstance(libraryName);
             if (engine == null)
@@ -146,12 +145,15 @@ namespace SpeechWebServer
             {
                 engine.Dispose();
             };
+            SoundPlayer sp = new SoundPlayer();
+            sp.Play(@"45_んーと……。.wav");
             engine.Play(text);
+            sp.Dispose();
 
         }
         public static void RecordMode(string libraryName, string text, string outputFilename)
         {
-            Recorder recorder = new Recorder(outputFilename);
+            SoundRecorder recorder = new SoundRecorder(outputFilename);
             recorder.PostWait = 300;
 
             var engines = SpeechController.GetAllSpeechEngine();

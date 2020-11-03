@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using System.Windows.Forms;
 using System.Windows.Threading;
 
@@ -60,6 +61,7 @@ namespace Speech
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
         [DllImport("user32.dll")]
+
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
 
