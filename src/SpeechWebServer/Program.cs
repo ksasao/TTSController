@@ -52,12 +52,12 @@ namespace SpeechWebServer
                     // IPv4
                     Console.WriteLine($"http://{address.ToString()}:{port}");
                 }
-                else if(address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6
-                    && !address.IsIPv6LinkLocal)
-                {
-                    // IPv6
-                    Console.WriteLine($"http://[{address.ToString()}]:{port}");
-                }
+                //else if(address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6
+                //    && !address.IsIPv6LinkLocal)
+                //{
+                //    // IPv6
+                //    Console.WriteLine($"http://[{address.ToString()}]:{port}");
+                //}
             }
             Console.WriteLine($"待機中...");
 

@@ -108,10 +108,8 @@ namespace Speech
         public void Stop()
         {
             // not implemented
-        //    _spVoice.
         }
 
-        enum EffectType { Volume = 8, Speed = 9, Pitch = 10, PitchRange = 11}
         /// <summary>
         /// 音量を設定します
         /// </summary>
@@ -146,53 +144,36 @@ namespace Speech
         }
 
         /// <summary>
-        /// 高さを設定します
+        /// 高さを設定します。SAPI5では無効です。
         /// </summary>
         /// <param name="value">0.5～2.0</param>
         public void SetPitch(float value)
         {
-            SetEffect(EffectType.Pitch, value);
-            ChangeToVoiceEffect();
+            // 何もしない
         }
         /// <summary>
-        /// 高さを取得します
+        /// 高さを取得します。SAPI5では無効です。
         /// </summary>
         /// <returns>高さ</returns>
         public float GetPitch()
         {
-            return GetEffect(EffectType.Pitch);
+            return 1f;
         }
         /// <summary>
-        /// 抑揚を設定します
+        /// 抑揚を設定します。SAPI5では無効です。
         /// </summary>
         /// <param name="value">0.0～2.0</param>
         public void SetPitchRange(float value)
         {
-            SetEffect(EffectType.PitchRange, value);
+            // 何もしない
         }
         /// <summary>
-        /// 抑揚を取得します
+        /// 抑揚を取得します。SAPI5では無効です。
         /// </summary>
         /// <returns>抑揚</returns>
         public float GetPitchRange()
         {
-            return GetEffect(EffectType.PitchRange);
-        }
-        
-        private void SetEffect(EffectType t, float value)
-        {
-        }
-        private float GetEffect(EffectType t)
-        {
-            return 1.0f;
-        }
-
-
-        /// <summary>
-        /// 音声効果タブを選択します
-        /// </summary>
-        private void ChangeToVoiceEffect()
-        {
+            return 1f;
         }
 
         #region IDisposable Support

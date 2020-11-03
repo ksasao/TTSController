@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using System.Security.Cryptography;
 
 namespace SpeechSample
 {
@@ -16,6 +17,7 @@ namespace SpeechSample
 
         static string name;
         static bool finished = false;
+        [MTAThread]
         static void Main(string[] args)
         {
             try
@@ -126,6 +128,7 @@ namespace SpeechSample
                 Console.ReadKey();
                 return;
             }
+
             engine.Activate();
             engine.Finished += (s, a) =>
             {

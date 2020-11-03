@@ -1,17 +1,40 @@
-﻿using NAudio.Wave;
+﻿using NAudio.CoreAudioApi;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Speech
 {
     public class SoundRecorder
     {
+        private const int APPCOMMAND_VOLUME_MUTE = 0x80000;
+        private const int APPCOMMAND_VOLUME_UP = 0xA0000;
+        private const int APPCOMMAND_VOLUME_DOWN = 0x90000;
+        private const int WM_APPCOMMAND = 0x319;
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SendMessageW(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+
+        private void Mute()
+        {
+            var handle = Process.GetCurrentProcess().MainWindowHandle;
+            SendMessageW(handle, WM_APPCOMMAND, handle, (IntPtr)APPCOMMAND_VOLUME_MUTE);
+        }
+        private void Unmute()
+        {
+            var handle = Process.GetCurrentProcess().MainWindowHandle;
+            SendMessageW(handle, WM_APPCOMMAND, handle, (IntPtr)APPCOMMAND_VOLUME_UP);
+            SendMessageW(handle, WM_APPCOMMAND, handle, (IntPtr)APPCOMMAND_VOLUME_DOWN);
+        }
+
         private WaveFileWriter _writer = null;
         private WasapiLoopbackCapture _capture = null;
-
         /// <summary>
         /// 音声合成の完了後に何ミリ秒待ってから録音を終了するか
         /// </summary>
@@ -45,6 +68,7 @@ namespace Speech
                 _capture.Dispose();
             };
             await Task.Delay((int)PreWait);
+            Mute();
             _capture.StartRecording();
         }
         public async void Stop()
@@ -53,6 +77,7 @@ namespace Speech
             {
                 await Task.Delay((int)PostWait);
                 _capture.StopRecording();
+                Unmute();
             }
         }
     }
