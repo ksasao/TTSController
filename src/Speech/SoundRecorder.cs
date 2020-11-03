@@ -18,17 +18,29 @@ namespace Speech
         private const int APPCOMMAND_VOLUME_DOWN = 0x90000;
         private const int WM_APPCOMMAND = 0x319;
 
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessageW(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
 
-        private void Mute()
+        public IntPtr GetHandle()
         {
             var handle = Process.GetCurrentProcess().MainWindowHandle;
+            if(handle == IntPtr.Zero)
+            {
+                handle = GetConsoleWindow();
+            }
+            return handle;
+        }
+
+        private void Mute()
+        {
+            var handle = GetHandle();
             SendMessageW(handle, WM_APPCOMMAND, handle, (IntPtr)APPCOMMAND_VOLUME_MUTE);
         }
         private void Unmute()
         {
-            var handle = Process.GetCurrentProcess().MainWindowHandle;
+            var handle = GetHandle();
             SendMessageW(handle, WM_APPCOMMAND, handle, (IntPtr)APPCOMMAND_VOLUME_UP);
             SendMessageW(handle, WM_APPCOMMAND, handle, (IntPtr)APPCOMMAND_VOLUME_DOWN);
         }
@@ -63,6 +75,7 @@ namespace Speech
             };
             _capture.RecordingStopped += (s, a) =>
             {
+                _writer.Flush();
                 _writer.Close();
                 _writer.Dispose();
                 _capture.Dispose();
@@ -77,6 +90,11 @@ namespace Speech
             {
                 await Task.Delay((int)PostWait);
                 _capture.StopRecording();
+                if (_writer != null)
+                {
+                    _writer.Close();
+                    _writer.Dispose();
+                }
                 Unmute();
             }
         }
