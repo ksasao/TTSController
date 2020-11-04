@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Security.Cryptography;
+using Speech.Effect;
+using System.Threading;
 
 namespace SpeechSample
 {
@@ -69,7 +71,14 @@ namespace SpeechSample
                     }
                     if (output == "")
                     {
-                        OneShotPlayMode(name, text);
+                        if (opt.Whisper)
+                        {
+                            WhisperMode(name, text);
+                        }
+                        else
+                        {
+                            OneShotPlayMode(name, text);
+                        }
                     }
                     else
                     {
@@ -103,7 +112,6 @@ namespace SpeechSample
             if (engine == null)
             {
                 Console.WriteLine($"{libraryName} を起動できませんでした。");
-                Console.ReadKey();
                 return;
             }
             engine.Activate();
@@ -113,6 +121,53 @@ namespace SpeechSample
                 engine.Dispose();
             };
             engine.Play(text);
+
+        }
+        private static void WhisperMode(string libraryName, string text)
+        {
+            string tempFile = "normal.wav";
+            string whisperFile = "whisper.wav";
+
+            var engines = SpeechController.GetAllSpeechEngine();
+            var engine = SpeechController.GetInstance(libraryName);
+            if (engine == null)
+            {
+                Console.WriteLine($"{libraryName} を起動できませんでした。");
+                return;
+            }
+            engine.Activate();
+
+            SoundRecorder recorder = new SoundRecorder(tempFile);
+            {
+                recorder.PostWait = 300;
+
+                engine.Finished += (s, a) =>
+                {
+                    finished = true;
+                };
+
+                recorder.Start();
+                engine.Play(text);
+            }
+
+            while (!finished)
+            {
+                Thread.Sleep(100);
+            }
+            engine.Dispose();
+            Task t = recorder.Stop();
+            t.Wait();
+            // ささやき声に変換
+            Whisper whisper = new Whisper();
+            Wave wave = new Wave();
+            wave.Read(tempFile);
+            whisper.Convert(wave);
+            wave.Write(whisperFile, wave.Data);
+
+            //// 変換した音声を再生
+            SoundPlayer sp = new SoundPlayer();
+            sp.Play(whisperFile);
+
 
         }
         public static void RecordMode(string libraryName, string text, string outputFilename)
@@ -125,14 +180,14 @@ namespace SpeechSample
             if (engine == null)
             {
                 Console.WriteLine($"{libraryName} を起動できませんでした。");
-                Console.ReadKey();
                 return;
             }
 
             engine.Activate();
             engine.Finished += (s, a) =>
             {
-                recorder.Stop();
+                Task t = recorder.Stop();
+                t.Wait();
                 finished = true;
                 engine.Dispose();
             };

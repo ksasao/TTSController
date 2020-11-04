@@ -11,12 +11,14 @@ using System.Threading.Tasks;
 
 namespace Speech
 {
-    public class SoundRecorder
+    public class SoundRecorder : IDisposable
     {
         private const int APPCOMMAND_VOLUME_MUTE = 0x80000;
         private const int APPCOMMAND_VOLUME_UP = 0xA0000;
         private const int APPCOMMAND_VOLUME_DOWN = 0x90000;
         private const int WM_APPCOMMAND = 0x319;
+
+        bool _finished = false;
 
         [DllImport("kernel32.dll")]
         static extern IntPtr GetConsoleWindow();
@@ -47,6 +49,8 @@ namespace Speech
 
         private WaveFileWriter _writer = null;
         private WasapiLoopbackCapture _capture = null;
+        private bool disposedValue;
+
         /// <summary>
         /// 音声合成の完了後に何ミリ秒待ってから録音を終了するか
         /// </summary>
@@ -67,6 +71,7 @@ namespace Speech
         }
         public async void Start()
         {
+            _finished = false;
             _capture = new WasapiLoopbackCapture();
             _writer = new WaveFileWriter(OutputPath, _capture.WaveFormat);
             _capture.DataAvailable += (s, a) =>
@@ -78,25 +83,54 @@ namespace Speech
                 _writer.Flush();
                 _writer.Close();
                 _writer.Dispose();
-                _capture.Dispose();
+                _finished = true;
             };
             await Task.Delay((int)PreWait);
             Mute();
             _capture.StartRecording();
         }
-        public async void Stop()
+        public async Task Stop()
         {
             if(_capture != null)
             {
                 await Task.Delay((int)PostWait);
                 _capture.StopRecording();
-                if (_writer != null)
+                _capture.Dispose();
+                while (!_finished)
                 {
-                    _writer.Close();
-                    _writer.Dispose();
+                    Thread.Sleep(100);
                 }
                 Unmute();
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Stop();
+                }
+
+                // TODO: アンマネージド リソース (アンマネージド オブジェクト) を解放し、ファイナライザーをオーバーライドします
+                // TODO: 大きなフィールドを null に設定します
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: 'Dispose(bool disposing)' にアンマネージド リソースを解放するコードが含まれる場合にのみ、ファイナライザーをオーバーライドします
+        // ~SoundRecorder()
+        // {
+        //     // このコードを変更しないでください。クリーンアップ コードを 'Dispose(bool disposing)' メソッドに記述します
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // このコードを変更しないでください。クリーンアップ コードを 'Dispose(bool disposing)' メソッドに記述します
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

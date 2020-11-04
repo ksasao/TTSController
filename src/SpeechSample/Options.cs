@@ -19,5 +19,7 @@ namespace SpeechSample
         public string Output { get; set; }
         [Option('v', "verbose", Required = false, HelpText = "音声合成エンジン、スピーカーの列挙")]
         public bool Verbose { get; set; } = false;
+        [Option('w', "whisper", Required = false, HelpText = "ささやき声で出力")]
+        public bool Whisper { get; set; } = false;
     }
 }

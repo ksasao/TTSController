@@ -98,6 +98,8 @@
   <ItemGroup>
     <Compile Include="Controller\ISpeechEnumerator.cs" />
     <Compile Include="Controller\ISpeechController.cs" />
+    <Compile Include="Effect\Wave.cs" />
+    <Compile Include="Effect\Whisper.cs" />
     <Compile Include="SoundRecorder.cs" />
     <Compile Include="Controller\SAPI5Enumerator.cs" />
     <Compile Include="SoundPlayer.cs" />
