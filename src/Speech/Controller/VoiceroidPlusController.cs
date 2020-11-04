@@ -18,7 +18,7 @@ namespace Speech
     /// <summary>
     /// VOICEROID+ 操作クラス
     /// </summary>
-    public class VoiceroidPlusController : IDisposable, ISpeechEngine
+    public class VoiceroidPlusController : IDisposable, ISpeechController
     {
         WindowsAppFriend _app;
         Process _process;

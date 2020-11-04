@@ -27,7 +27,7 @@ namespace Speech
             return info.ToArray();
         }
 
-        public static ISpeechEngine GetInstance(string libraryName)
+        public static ISpeechController GetInstance(string libraryName)
         {
             var info = GetAllSpeechEngine();
             foreach(var e in info)
@@ -40,7 +40,7 @@ namespace Speech
             return null;
         }
 
-        public static ISpeechEngine GetInstance(SpeechEngineInfo info)
+        public static ISpeechController GetInstance(SpeechEngineInfo info)
         {
             foreach(var i in speechEnumerator)
             {

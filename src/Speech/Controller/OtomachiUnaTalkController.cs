@@ -18,7 +18,7 @@ namespace Speech
     /// <summary>
     /// 音街ウナTalk Ex 操作クラス
     /// </summary>
-    public class OtomachiUnaTalkController : IDisposable, ISpeechEngine
+    public class OtomachiUnaTalkController : IDisposable, ISpeechController
     {
         WindowsAppFriend _app;
         Process _process;

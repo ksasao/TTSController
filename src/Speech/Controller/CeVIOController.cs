@@ -22,7 +22,7 @@ namespace Speech
     /// <summary>
     /// CeVIO 操作クラス
     /// </summary>
-    public class CeVIOController : IDisposable, ISpeechEngine
+    public class CeVIOController : IDisposable, ISpeechController
     {
         public SpeechEngineInfo Info { get; private set; }
 

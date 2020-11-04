@@ -16,7 +16,7 @@ namespace Speech
     /// <summary>
     /// SAPI5 操作クラス
     /// </summary>
-    public class SAPI5Controller : IDisposable, ISpeechEngine
+    public class SAPI5Controller : IDisposable, ISpeechController
     {
         SpeechSynthesizer synthesizer = null;
         string _voiceName;

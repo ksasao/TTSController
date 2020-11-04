@@ -9,6 +9,6 @@ namespace Speech
     interface ISpeechEnumerator
     {
         SpeechEngineInfo[] GetSpeechEngineInfo();
-        ISpeechEngine GetControllerInstance(SpeechEngineInfo info);
+        ISpeechController GetControllerInstance(SpeechEngineInfo info);
     }
 }

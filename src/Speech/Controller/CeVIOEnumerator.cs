@@ -72,7 +72,7 @@ namespace Speech
             return info.ToArray();
         }
 
-        public ISpeechEngine GetControllerInstance(SpeechEngineInfo info)
+        public ISpeechController GetControllerInstance(SpeechEngineInfo info)
         {
             return EngineName == info.EngineName ? new CeVIOController(info) : null;
         }

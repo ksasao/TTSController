@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Speech
 {
-    public interface ISpeechEngine
+    public interface ISpeechController
     {
         /// <summary>
         /// 音声合成エンジンの情報を取得します
