@@ -69,7 +69,7 @@ namespace Speech
         {
             OutputPath = filename;
         }
-        public async void Start()
+        public async Task Start()
         {
             _finished = false;
             _capture = new WasapiLoopbackCapture();
@@ -110,7 +110,8 @@ namespace Speech
             {
                 if (disposing)
                 {
-                    Stop();
+                    Task t = Stop();
+                    t.Wait();
                 }
 
                 // TODO: アンマネージド リソース (アンマネージド オブジェクト) を解放し、ファイナライザーをオーバーライドします

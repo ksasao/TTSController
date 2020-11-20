@@ -2,6 +2,7 @@
 using Speech;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
@@ -52,12 +53,6 @@ namespace SpeechWebServer
                     // IPv4
                     Console.WriteLine($"http://{address.ToString()}:{port}");
                 }
-                //else if(address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6
-                //    && !address.IsIPv6LinkLocal)
-                //{
-                //    // IPv6
-                //    Console.WriteLine($"http://[{address.ToString()}]:{port}");
-                //}
             }
             Console.WriteLine($"待機中...");
 
@@ -78,6 +73,17 @@ namespace SpeechWebServer
                     {
                         // favicon は無視
                         response.StatusCode = 404;
+                        continue;
+                    }else if (context.Request.Url.AbsoluteUri.IndexOf("?") < 0 && context.Request.Url.LocalPath != "/")
+                    {
+                        string path = "html" + context.Request.Url.LocalPath;
+                        // ? が含まれない場合は /html 以下をレスポンスとして返す
+                        byte[] body = File.ReadAllBytes(path);
+                        response.StatusCode = 200;
+                        if (path.EndsWith(".html")){
+                            response.ContentType = "text/html; charset=utf-8";
+                        }
+                        response.OutputStream.Write(body, 0, body.Length);
                         continue;
                     }
                     var queryString = HttpUtility.ParseQueryString(context.Request.Url.Query);
