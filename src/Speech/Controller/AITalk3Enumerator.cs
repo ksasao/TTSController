@@ -53,6 +53,10 @@ namespace Speech
                         Data d = new Data();
                         var xml = XElement.Load(Path.Combine(xmlFile));
                         d.Name = xml.Element("profile").Attribute("name").Value;
+                        if (path.IndexOf("AITalkLite") > 0)
+                        {
+                            d.Name += "(LITE)";
+                        }
                         d.Path = Directory.GetFiles(path,"*.exe")[0];
                         data.Add(d);
                     }

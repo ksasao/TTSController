@@ -70,12 +70,6 @@
     <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
     </Reference>
-    <Reference Include="Ong.Friendly.FormsStandardControls, Version=2.17.2.0, Culture=neutral, PublicKeyToken=ee7fcdb5644bd140, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ong.Friendly.FormsStandardControls.2.17.2\lib\net20\Ong.Friendly.FormsStandardControls.dll</HintPath>
-    </Reference>
-    <Reference Include="Ong.Friendly.FormsStandardControls.Generator, Version=2.17.2.0, Culture=neutral, PublicKeyToken=d15e24feb703b5b0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ong.Friendly.FormsStandardControls.2.17.2\lib\net20\Ong.Friendly.FormsStandardControls.Generator.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RM.Friendly.WPFStandardControls.3.0, Version=1.8.0.0, Culture=neutral, PublicKeyToken=1b8f25b96765ebb0, processorArchitecture=MSIL">

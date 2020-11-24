@@ -1,7 +1,6 @@
 ﻿using Codeer.Friendly;
 using Codeer.Friendly.Windows;
 using Codeer.Friendly.Windows.Grasp;
-using Ong.Friendly.FormsStandardControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -151,9 +150,8 @@ namespace Speech
         public void Play()
         {
             WindowControl comboBox = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 0, 0, 0, 0);
-            FormsComboBox combo = new FormsComboBox(comboBox);
-            combo.EmulateChangeSelect(_voiceIndex);
-
+            AppVar combo = comboBox.AppVar;
+            combo["SelectedIndex"](_voiceIndex);
 
             WindowControl playButton = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 1, 0, 2);
             AppVar button = playButton.AppVar;
