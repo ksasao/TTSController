@@ -27,12 +27,15 @@ namespace Speech
 
         private void Initialize()
         {
-            string basePath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + @"\AI\AITalk3";
-            string[] dirs = Directory.GetDirectories(basePath);
             List<Data> voiceData = new List<Data>();
-            foreach(var d in dirs)
+            string basePath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + @"\AI\AITalk3";
+            if (Directory.Exists(basePath))
             {
-                voiceData.AddRange(FindAITalk(d));
+                string[] dirs = Directory.GetDirectories(basePath);
+                foreach (var d in dirs)
+                {
+                    voiceData.AddRange(FindAITalk(d));
+                }
             }
             _info = voiceData.ToArray();
         }
