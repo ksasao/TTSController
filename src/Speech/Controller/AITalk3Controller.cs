@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Threading;
@@ -245,21 +246,31 @@ namespace Speech
         
         private void SetEffect(EffectType t, float value)
         {
+            if (Info.LibraryName.IndexOf("LITE") > 0)
+            {
+                // LITEは各種操作が出来ない
+                return;
+            }
             ChangeToVoiceEffect();
             int index = (int)t;
-            WindowControl control = _root.IdentifyFromZIndex(2, 0, 0, 0, 0, 0, 0, index);
+            WindowControl control = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 0, 1, 0, 0, index);
             AppVar v = control.AppVar;
             v["Focus"]();
             v["Text"](string.Format("{0:0.00}", value));
 
-            // TODO: AITalk3では数値を変更するだけでは変更が行われないため何らかの方法が必要
-
+            Thread.Sleep(100);
+            SendKeys.SendWait("{TAB}");
         }
         private float GetEffect(EffectType t)
         {
+            if (Info.LibraryName.IndexOf("LITE") > 0)
+            {
+                // LITEは各種操作が出来ない
+                return 1.0f;
+            }
             ChangeToVoiceEffect();
             int index = (int)t;
-            WindowControl control = _root.IdentifyFromZIndex(2, 0, 0, 0, 0, 0, 0, index);
+            WindowControl control = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 0, 1, 0, 0, index);
             AppVar v = control.AppVar;
             return Convert.ToSingle((string)v["Text"]().Core);
         }
@@ -271,9 +282,10 @@ namespace Speech
         private void ChangeToVoiceEffect()
         {
             RestoreMinimizedWindow();
-            WindowControl tabControl = _root.IdentifyFromZIndex(2, 0, 0, 0, 0);
+            WindowControl tabControl = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 0, 1);
+            tabControl.SetFocus();
             AppVar tab = tabControl.AppVar;
-            tab["SelectedIndex"](2);
+            tab["SelectedIndex"]((int)0);
         }
         private void RestoreMinimizedWindow()
         {

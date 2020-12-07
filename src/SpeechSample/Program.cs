@@ -215,10 +215,10 @@ namespace SpeechSample
 
             // 音声合成エンジンを起動
             engine.Activate();
+            engine.SetVolume(1.0f);
             string message = $"音声合成エンジン {engine.Info.EngineName}、{engine.Info.LibraryName}を起動しました。";
             engine.Play(message); // 音声再生は非同期実行される
             Console.WriteLine(message);
-            engine.SetVolume(1.0f);
 
             string line = "";
             while(true)
@@ -229,9 +229,15 @@ namespace SpeechSample
                     engine.Dispose();
                     return;
                 }
-                engine.Stop(); // 喋っている途中に文字が入力されたら再生をストップ
-                engine.Play(line); // 音声再生は非同期実行される
-                Console.WriteLine($"Volume: {engine.GetVolume()}, Speed: {engine.GetSpeed()}, Pitch: {engine.GetPitch()}, PitchRange: {engine.GetPitchRange()}");
+                try
+                {
+                    engine.Stop(); // 喋っている途中に文字が入力されたら再生をストップ
+                    engine.Play(line); // 音声再生は非同期実行される
+                    Console.WriteLine($"Volume: {engine.GetVolume()}, Speed: {engine.GetSpeed()}, Pitch: {engine.GetPitch()}, PitchRange: {engine.GetPitchRange()}");
+                }catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 
