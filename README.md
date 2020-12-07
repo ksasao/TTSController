@@ -6,8 +6,10 @@
 
 ## 対応音声合成ライブラリ
 - VOICEROID+ 各種
-- VOICEROID2 各種
 - 音街ウナTalkEx
+- VOICEROID2 各種
+- ガイノイドTALK 各種
+- かんたん！AITalk3 / 関西風 / Lite
 - CeVIO CS6 / CS7
 - SAPI5 (Windows10標準の音声合成機能。スタートメニュー>設定>時刻と言語>音声認識>音声の管理>音声の追加から各国語の音声が追加できます。API仕様により追加しても列挙されない音声があります。)
 
@@ -25,14 +27,6 @@
 - VOICEROID+ 東北きりたんがインストールされている場合、http://localhost:1000/?name=東北きりたん&text=こんばんは を開くと東北きりたんの声で発話します。他の VOICEROID を利用する場合は、アプリ起動時に表示される「インストール済み音声合成ライブラリ」の表記を参考に、適宜 name の引数を変更してください。
 
 ## TODO
-
-### 対応(予定) の TTS
-
-- [x] VOICEROID+ EX
-- [x] VOICEROID2
-- [x] 音街ウナTalk Ex
-- [x] CeVIO
-- [x] SAPI5 (おまけ程度)
 
 ### 制御機能
 - [x] 話者の一覧取得
