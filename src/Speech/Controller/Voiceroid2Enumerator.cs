@@ -11,21 +11,23 @@ namespace Speech
     public class Voiceroid2Enumerator : ISpeechEnumerator
     {
         string[] _name = new string[0];
-        public string PromptString { get; private set; }
+        public string PromptString { get; internal set; }
 
-        public const string EngineName = "VOICEROID2";
+        public string EngineName { get; internal set; }
         public Voiceroid2Enumerator()
-        {
-            Initialize();
-        }
-
-        private void Initialize()
         {
             // VOICEROID2 の一覧は下記で取得できる
             // 下記ファイルは VOICEROID2 終了時に生成されるため、一度 VOICEROID2 を起動・終了
             // しておくこと
             string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
                 + @"\AHS\VOICEROID\2.0\Standard.settings";
+            Initialize(path, "VOICEROID2");
+        }
+
+        internal void Initialize(string path,string engineName)
+        {
+            EngineName = engineName;
+
             if (File.Exists(path))
             {
                 List<string> presetName = new List<string>();
@@ -75,7 +77,7 @@ namespace Speech
             }
             return info.ToArray();
         }
-        private string GetInstalledPath()
+        internal virtual string GetInstalledPath()
         {
             string uninstall_path = @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\";
             // 32bit の場合 SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall";

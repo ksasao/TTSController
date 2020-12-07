@@ -149,10 +149,12 @@ namespace Speech
         /// </summary>
         public void Play()
         {
+            // 話者選択
             WindowControl comboBox = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 0, 0, 0, 0);
             AppVar combo = comboBox.AppVar;
             combo["SelectedIndex"](_voiceIndex);
 
+            // 再生ボタンをクリック
             WindowControl playButton = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 1, 0, 2);
             AppVar button = playButton.AppVar;
             string text = (string)button["Text"]().Core;

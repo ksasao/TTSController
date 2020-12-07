@@ -218,7 +218,7 @@ namespace Speech
         {
             SetText(text);
         }
-        private void SetText(string text)
+        internal virtual void SetText(string text)
         {
             text = text.Trim() == "" ? "." : text;
             string t = _libraryName + _promptString + text;
