@@ -30,49 +30,12 @@ namespace Speech
         Queue<string> _queue = new Queue<string>();
 
         public delegate bool EnumWindowsDelegate(IntPtr hWnd, IntPtr lparam);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public extern static bool EnumWindows(EnumWindowsDelegate lpEnumFunc,
-            IntPtr lparam);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern int GetWindowText(IntPtr hWnd,
-            StringBuilder lpString, int nMaxCount);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern int GetWindowTextLength(IntPtr hWnd);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern int GetClassName(IntPtr hWnd,
-            StringBuilder lpClassName, int nMaxCount);
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
-
         static int _pid = 0;
-
 
         [DllImport("User32.dll")]
         static extern int SetForegroundWindow(IntPtr hWnd);
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-        [DllImport("user32.dll")]
-
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct RECT
-        {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
-        }
 
         public SpeechEngineInfo Info { get; private set; }
 

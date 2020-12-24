@@ -9,24 +9,17 @@ using System.Xml.Linq;
 namespace Speech
 {
 
-    public class AITalk3Enumerator : ISpeechEnumerator
+    public class AITalk3Enumerator : VoiceroidPlusEnumerator
     {
 
-        class Data
-        {
-            public string Name { get; internal set; }
-            public string Path { get; internal set; }
-        }
-        Data[] _info;
-        public const string EngineName = "AITalk3";
-
-        public AITalk3Enumerator()
+        public AITalk3Enumerator() : base()
         {
             Initialize();
         }
 
         private void Initialize()
         {
+            EngineName = "AITalk3";
             List<Data> voiceData = new List<Data>();
             string basePath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + @"\AI\AITalk3";
             if (Directory.Exists(basePath))
@@ -72,20 +65,11 @@ namespace Speech
 
             return data;
         }
-
-        public SpeechEngineInfo[] GetSpeechEngineInfo()
-        {
-            List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
-            foreach (var v in _info)
-            {
-                info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = v.Path, LibraryName = v.Name });
-            }
-            return info.ToArray();
-        }
-        public ISpeechController GetControllerInstance(SpeechEngineInfo info)
+        public override ISpeechController GetControllerInstance(SpeechEngineInfo info)
         {
             return EngineName == info.EngineName ? new AITalk3Controller(info) : null;
         }
+
 
     }
 }

@@ -123,6 +123,7 @@ namespace SpeechWebServer
                     Console.WriteLine("Error: " + ex.Message);
                 }
                 finally
+                
                 {
                     response.Close();
                 }

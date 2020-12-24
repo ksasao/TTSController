@@ -12,13 +12,13 @@ namespace Speech
     public class VoiceroidPlusEnumerator : ISpeechEnumerator
     {
 
-        class Data
+        protected class Data
         {
             public string Name { get; internal set; }
             public string Path { get; internal set; }
         }
-        Data[] _info;
-        public const string EngineName = "VOICEROID+";
+        protected Data[] _info;
+        public string EngineName { get; internal set; }
 
         public VoiceroidPlusEnumerator()
         {
@@ -27,6 +27,7 @@ namespace Speech
 
         private void Initialize()
         {
+            EngineName = "VOICEROID+";
             // VOICEROID の一覧は下記で取得できる
             string path = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
                 + @"\AHS\";
@@ -62,6 +63,7 @@ namespace Speech
 
         public SpeechEngineInfo[] GetSpeechEngineInfo()
         {
+
             List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
             foreach (var v in _info)
             {
@@ -69,7 +71,7 @@ namespace Speech
             }
             return info.ToArray();
         }
-        public ISpeechController GetControllerInstance(SpeechEngineInfo info)
+        public virtual ISpeechController GetControllerInstance(SpeechEngineInfo info)
         {
             return EngineName == info.EngineName ? new VoiceroidPlusController(info) : null;
         }

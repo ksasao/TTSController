@@ -22,22 +22,23 @@ namespace Speech
     {
         WindowsAppFriend _app;
         Process _process;
-        WindowControl _root;
+        protected WindowControl _root;
+
         System.Timers.Timer _timer; // 状態監視のためのタイマー
         bool _playStarting = false;
 
         [DllImport("User32.dll")]
         static extern int SetForegroundWindow(IntPtr hWnd);
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        protected static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
 
         /// <summary>
         /// Voiceroid のフルパス
         /// </summary>
-        public string VoiceroidPath { get; private set; }
+        public string VoiceroidPath { get; protected set; }
 
-        public SpeechEngineInfo Info { get; private set; }
+        public SpeechEngineInfo Info { get; protected set; }
 
         public VoiceroidPlusController(SpeechEngineInfo info)
         {
@@ -49,15 +50,22 @@ namespace Speech
 
         private void timer_Elapsed(object sender, EventArgs e)
         {
-            WindowControl playButton = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 1, 0, 3);
-            AppVar button = playButton.AppVar;
-            string text = (string)button["Text"]().Core;
-            if (!_playStarting && text.Trim() == "再生")
+            try
             {
-                _timer.Stop();
-                OnFinished();
+                WindowControl playButton = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 1, 0, 3);
+                AppVar button = playButton.AppVar;
+                string text = (string)button["Text"]().Core;
+                if (!_playStarting && text.Trim() == "再生")
+                {
+                    _timer.Stop();
+                    OnFinished();
+                }
+                _playStarting = false;
             }
-            _playStarting = false;
+            catch
+            {
+                // VOICEROID+ との通信が失敗することがあるが無視
+            }
         }
 
         /// <summary>
@@ -120,7 +128,7 @@ namespace Speech
         /// <summary>
         /// VOICEROID+ に入力された文字列を再生します
         /// </summary>
-        public void Play()
+        public virtual void Play()
         {
             WindowControl playButton = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 1, 0, 3);
             AppVar button = playButton.AppVar;
@@ -135,14 +143,14 @@ namespace Speech
         /// <summary>
         /// VOICEROID+ の再生を停止します（停止ボタンを押す）
         /// </summary>
-        public void Stop()
+        public virtual void Stop()
         {
             WindowControl stopButton = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 1, 0, 2);
             AppVar button = stopButton.AppVar;
             button["PerformClick"]();
         }
 
-        enum EffectType { Volume = 8, Speed = 9, Pitch = 10, PitchRange = 11}
+        protected enum EffectType { Volume = 8, Speed = 9, Pitch = 10, PitchRange = 11}
         /// <summary>
         /// 音量を設定します
         /// </summary>
@@ -210,7 +218,7 @@ namespace Speech
             return GetEffect(EffectType.PitchRange);
         }
         
-        private void SetEffect(EffectType t, float value)
+        protected virtual void SetEffect(EffectType t, float value)
         {
             ChangeToVoiceEffect();
             int index = (int)t;
@@ -222,7 +230,7 @@ namespace Speech
             // TODO: VOICEROID+では数値を変更するだけでは変更が行われないため何らかの方法が必要
 
         }
-        private float GetEffect(EffectType t)
+        protected virtual float GetEffect(EffectType t)
         {
             ChangeToVoiceEffect();
             int index = (int)t;
@@ -235,14 +243,14 @@ namespace Speech
         /// <summary>
         /// 音声効果タブを選択します
         /// </summary>
-        private void ChangeToVoiceEffect()
+        protected virtual void ChangeToVoiceEffect()
         {
             RestoreMinimizedWindow();
             WindowControl tabControl = _root.IdentifyFromZIndex(2, 0, 0, 0, 0);
             AppVar tab = tabControl.AppVar;
             tab["SelectedIndex"](2);
         }
-        private void RestoreMinimizedWindow()
+        protected void RestoreMinimizedWindow()
         {
             const uint WM_SYSCOMMAND = 0x0112;
             const int SC_RESTORE = 0xF120;
