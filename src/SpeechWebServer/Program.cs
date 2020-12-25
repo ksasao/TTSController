@@ -87,6 +87,7 @@ namespace SpeechWebServer
                         continue;
                     }
                     var queryString = HttpUtility.ParseQueryString(context.Request.Url.Query);
+                    EngineParameters ep = new EngineParameters();
 
                     string voiceText = DateTime.Now.ToString("HH時 mm分 ss秒です");
                     string voiceName = defaultName;
@@ -106,6 +107,22 @@ namespace SpeechWebServer
                         ChangeSpeaker(speaker);
                         location = $"@{speaker}";
                     }
+                    if (queryString["pitch"] != null)
+                    {
+                        ep.Pitch = Convert.ToSingle(queryString["pitch"]);
+                    }
+                    if (queryString["range"] != null)
+                    {
+                        ep.PitchRange = Convert.ToSingle(queryString["range"]);
+                    }
+                    if (queryString["volume"] != null)
+                    {
+                        ep.Volume = Convert.ToSingle(queryString["volume"]);
+                    }
+                    if (queryString["speed"] != null)
+                    {
+                        ep.Speed = Convert.ToSingle(queryString["speed"]);
+                    }
 
 
                     Console.WriteLine("=> " + context.Request.RemoteEndPoint.Address);
@@ -116,7 +133,7 @@ namespace SpeechWebServer
                     byte[] content = Encoding.UTF8.GetBytes(voiceText);
                     
                     response.OutputStream.Write(content, 0, content.Length);
-                    OneShotPlayMode(voiceName, voiceText);
+                    OneShotPlayMode(voiceName, voiceText, ep);
                 }
                 catch (Exception ex)
                 {
@@ -138,7 +155,7 @@ namespace SpeechWebServer
             return names.ToArray();
         }
 
-        private static void OneShotPlayMode(string libraryName, string text)
+        private static void OneShotPlayMode(string libraryName, string text, EngineParameters ep)
         {
             var engines = SpeechController.GetAllSpeechEngine();
             var engine = SpeechController.GetInstance(libraryName);
@@ -152,6 +169,22 @@ namespace SpeechWebServer
             {
                 engine.Dispose();
             };
+            if(ep.Volume > 0)
+            {
+                engine.SetVolume(ep.Volume);
+            }
+            if (ep.Speed > 0)
+            {
+                engine.SetSpeed(ep.Speed);
+            }
+            if (ep.Pitch > 0)
+            {
+                engine.SetPitch(ep.Pitch);
+            }
+            if (ep.PitchRange > 0)
+            {
+                engine.SetPitchRange(ep.PitchRange);
+            }
             engine.Play(text);
 
         }

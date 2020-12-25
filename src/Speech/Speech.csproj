@@ -110,13 +110,14 @@
     <Compile Include="Controller\AITalk3Enumerator.cs" />
     <Compile Include="Effect\Wave.cs" />
     <Compile Include="Effect\Whisper.cs" />
+    <Compile Include="EngineParameters.cs" />
     <Compile Include="SoundRecorder.cs" />
     <Compile Include="Controller\SAPI5Enumerator.cs" />
     <Compile Include="SoundPlayer.cs" />
-    <Compile Include="Controller\SpeechEngineInfo.cs" />
+    <Compile Include="SpeechEngineInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controller\SAPI5Controller.cs" />
-    <Compile Include="Controller\SpeechController.cs" />
+    <Compile Include="SpeechController.cs" />
     <Compile Include="Controller\CeVIOController.cs" />
     <Compile Include="Controller\Voiceroid2Controller.cs" />
     <Compile Include="Controller\CeVIOEnumerator.cs" />

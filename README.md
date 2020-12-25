@@ -39,7 +39,9 @@
 ### 利用方法
 - ブラウザで http://localhost:1000/ を開くと現在の時刻を発話します
 - ブラウザで http://localhost:1000/?text=こんにちは を開くと「こんにちは」と発話します。「こんにちは」の部分は任意の文字列を指定できます
+- ブラウザで http://localhost:1000/?text=おやすみなさい&range=1.2&volume=1.0&pitch=0.8&speed=0.8 のように、音量(volume), 話速(speed), 高さ(pitch), 抑揚(range) を指定できます (CeVIO と SAPI5を除く)
 - VOICEROID+ 東北きりたんがインストールされている場合、http://localhost:1000/?name=東北きりたん&text=こんばんは を開くと東北きりたんの声で発話します。他の VOICEROID を利用する場合は、アプリ起動時に表示される「インストール済み音声合成ライブラリ」の表記を参考に、適宜 name の引数を変更してください。
+
 
 ## TODO
 
