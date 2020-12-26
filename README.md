@@ -2,7 +2,7 @@
 各種 Text-to-Speech エンジンを統一的に操作するライブラリです。VOICEROIDなどを自動化する簡易Webサーバもあります。
 
 ## 対応プラットフォーム
-- Windows 10 (32bit/64bit)
+- Windows 10 (64bit)
 
 ## 対応音声合成ライブラリ
 - VOICEROID+ 各種
