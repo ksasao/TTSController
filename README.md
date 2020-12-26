@@ -42,6 +42,7 @@
 - http://localhost:1000/?text=おやすみなさい&range=1.2&volume=1.0&pitch=0.8&speed=0.8 のように、音量(volume), 話速(speed), 高さ(pitch), 抑揚(range) を指定できます (かんたん！AITalk3 LITE, CeVIO, SAPI5を除く)
 - VOICEROID+ 東北きりたんがインストールされている場合、http://localhost:1000/?name=東北きりたん&text=こんばんは を開くと東北きりたんの声で発話します。他の VOICEROID を利用する場合は、アプリ起動時に表示される「インストール済み音声合成ライブラリ」の表記を参考に、適宜 name の引数を変更してください。
 - http://localhost:1000/?text=おはよう&speaker=和室　のように音声を再生するスピーカー名を指定することができます。カッコ内の文字列を前方一致で検索します。
+
 ![スピーカー名の表示](https://user-images.githubusercontent.com/179872/103144037-c823f200-4765-11eb-93a3-e202a8621ad2.png)
 
 ## TODO
