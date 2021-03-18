@@ -10,12 +10,14 @@ namespace Speech
     {
         static ISpeechEnumerator[] speechEnumerator =
         {
+            new AIVOICEEnumerator(),
             new AITalk3Enumerator(),
             new VoiceroidPlusEnumerator(),
             new Voiceroid2Enumerator(),
             new GynoidTalkEnumerator(),
             new OtomachiUnaTalkEnumerator(),
             new CeVIOEnumerator(),
+            new CeVIOAIEnumerator(),
             new SAPI5Enumerator()
         };
         public static SpeechEngineInfo[] GetAllSpeechEngine()

@@ -22,7 +22,7 @@ namespace Speech
     /// <summary>
     /// CeVIO 操作クラス
     /// </summary>
-    public class CeVIOController : IDisposable, ISpeechController
+    public class CeVIOAIController : IDisposable, ISpeechController
     {
         public SpeechEngineInfo Info { get; private set; }
 
@@ -31,13 +31,13 @@ namespace Speech
         Assembly _assembly;
         Type _serviceControl;
 
-        CeVIOEnumerator _cevio;
+        CeVIOAIEnumerator _cevio;
 
-        public CeVIOController(SpeechEngineInfo info)
+        public CeVIOAIController(SpeechEngineInfo info)
         {
             Info = info;
 
-            _cevio = new CeVIOEnumerator();
+            _cevio = new CeVIOAIEnumerator();
             _libraryName = info.LibraryName;
         }
 
@@ -73,14 +73,14 @@ namespace Speech
         public void Activate()
         {
             _assembly = Assembly.LoadFrom(_cevio.AssemblyPath);
-            _serviceControl = _assembly.GetType("CeVIO.Talk.RemoteService.ServiceControl");
+            _serviceControl = _assembly.GetType("CeVIO.Talk.RemoteService2.ServiceControl2");
 
             //// 【CeVIO Creative Studio】起動
             //ServiceControl.StartHost(false);
             MethodInfo startHost = _serviceControl.GetMethod("StartHost");
             startHost.Invoke(null, new object[] { false });
 
-            _talker = Activator.CreateInstance(_assembly.GetType("CeVIO.Talk.RemoteService.Talker"), new object[] { Info.LibraryName });
+            _talker = Activator.CreateInstance(_assembly.GetType("CeVIO.Talk.RemoteService2.Talker2"), new object[] { Info.LibraryName });
         }
 
         /// <summary>
@@ -218,7 +218,7 @@ namespace Speech
                 {
                     // CeVIO を終了する場合はコメントを外す
                     //MethodInfo closeHost = _serviceControl.GetMethod("CloseHost");
-                    //var hostCloseMode = _assembly.GetType("CeVIO.Talk.RemoteService.HostCloseMode");
+                    //var hostCloseMode = _assembly.GetType("CeVIO.Talk.RemoteService2.HostCloseMode");
                     //var mode = Enum.Parse(hostCloseMode, "Interrupt"); // Default, Interrupt, NotCancelable
                     //closeHost.Invoke(null, new object[] { mode });
                 }
