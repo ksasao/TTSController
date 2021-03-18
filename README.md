@@ -8,9 +8,11 @@
 - VOICEROID+ 各種
 - 音街ウナTalkEx
 - VOICEROID2 各種
+- A.I.VOICE (要x64ビルド)
 - ガイノイドTALK 各種
 - かんたん！AITalk3 / 関西風 / Lite
 - CeVIO CS6 / CS7
+- CeVIO AI (要x64ビルド)
 - SAPI5 (Windows10標準の音声合成機能。スタートメニュー>設定>時刻と言語>音声認識>音声の管理>音声の追加から各国語の音声が追加できます。API仕様により追加しても列挙されない音声があります。)
 
 ### 動作確認済みリスト
@@ -25,7 +27,9 @@
 |かんたん！AITalk3 関西風|みやび, やまと|
 |かんたん！AITalk3 LITE|あんず(LITE), かほ(LITE), ななこ(LITE), のぞみ(LITE), せいじ(LITE)|
 |ガイノイドTALK|鳴花ヒメ, 鳴花ミコト|
+|A.I.VOICE|琴葉 茜,琴葉 茜（蕾）,琴葉 茜,琴葉 茜（蕾）|
 |CeVIO CS6 / CS7|さとうささら, すずきつづみ, タカハシ|
+|CeVIO AI|小春六花|
 |SAPI5|Microsoft Haruka Desktop, Microsoft David Desktop, Microsoft Zira Desktop, Microsoft Irina Desktop|
 
 ## ブラウザで音声合成する
