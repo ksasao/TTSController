@@ -28,6 +28,8 @@ namespace Speech
                           + @"\CeVIO\CeVIO Creative Studio (64bit)";
             string cevioCS6Path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)
                           + @"\CeVIO\CeVIO Creative Studio";
+            string cevioAIPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)
+                          + @"\CeVIO\CeVIO AI";
 
             string cevioPath = "";
 
@@ -37,8 +39,6 @@ namespace Speech
             }
             else if(File.Exists(cevioCS6Path + @"\CeVIO Creative Studio.exe"))
             {
-
-
                 cevioPath = cevioCS6Path;
             }
             if (cevioPath != "")

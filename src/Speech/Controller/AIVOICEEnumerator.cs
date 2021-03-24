@@ -11,8 +11,6 @@ namespace Speech
 {
     class AIVOICEEnumerator : Voiceroid2Enumerator
     {
-        string[] _name = new string[0];
-
         public AIVOICEEnumerator()
         {
             // A.I.VOICEの一覧は下記で取得できる
@@ -40,6 +38,16 @@ namespace Speech
                 }
             }
             return result;
+        }
+        public override SpeechEngineInfo[] GetSpeechEngineInfo()
+        {
+            List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
+            string path = GetInstalledPath();
+            foreach (var v in _name)
+            {
+                info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = path, LibraryName = v, Is64BitProcess = true }) ;
+            }
+            return info.ToArray();
         }
 
     }

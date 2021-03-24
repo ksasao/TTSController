@@ -20,5 +20,9 @@ namespace Speech
         /// 音声合成エンジンのパス(SAPIの場合は空文字)
         /// </summary>
         public string EnginePath { get; internal set; }
+        /// <summary>
+        /// 音声合成エンジンが64bitプロセスの場合はtrue
+        /// </summary>
+        public bool Is64BitProcess { get; internal set; } = false;
     }
 }

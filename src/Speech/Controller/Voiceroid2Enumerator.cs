@@ -10,7 +10,7 @@ namespace Speech
 {
     public class Voiceroid2Enumerator : ISpeechEnumerator
     {
-        string[] _name = new string[0];
+        protected string[] _name = new string[0];
         public string PromptString { get; internal set; }
 
         public string EngineName { get; internal set; }
@@ -67,7 +67,7 @@ namespace Speech
                 }
             }
         }
-        public SpeechEngineInfo[] GetSpeechEngineInfo()
+        public virtual SpeechEngineInfo[] GetSpeechEngineInfo()
         {
             List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
             string path = GetInstalledPath();

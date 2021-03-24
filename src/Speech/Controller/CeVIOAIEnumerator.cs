@@ -58,7 +58,7 @@ namespace Speech
             List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
             foreach (var v in _name)
             {
-                info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = _installedPath, LibraryName = v });
+                info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = _installedPath, LibraryName = v, Is64BitProcess = true });
             }
             return info.ToArray();
         }
