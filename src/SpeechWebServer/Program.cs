@@ -91,6 +91,7 @@ namespace SpeechWebServer
 
                     string voiceText = DateTime.Now.ToString("HH時 mm分 ss秒です");
                     string voiceName = defaultName;
+                    string engineName = "";
                     if (queryString["text"] != null)
                     {
                         voiceText = queryString["text"];
@@ -123,17 +124,20 @@ namespace SpeechWebServer
                     {
                         ep.Speed = Convert.ToSingle(queryString["speed"]);
                     }
+                    if (queryString["engine"] != null)
+                    {
+                        engineName = queryString["engine"];
+                    }
 
 
                     Console.WriteLine("=> " + context.Request.RemoteEndPoint.Address);
-                    Console.WriteLine($"<= [{voiceName}{location}] {voiceText}");
 
                     response.StatusCode = 200;
                     response.ContentType = "text/plain; charset=utf-8";
                     byte[] content = Encoding.UTF8.GetBytes(voiceText);
                     
                     response.OutputStream.Write(content, 0, content.Length);
-                    OneShotPlayMode(voiceName, voiceText, ep);
+                    OneShotPlayMode(voiceName,engineName, voiceText, ep);
                 }
                 catch (Exception ex)
                 {
@@ -151,14 +155,18 @@ namespace SpeechWebServer
         {
             var engines = SpeechController.GetAllSpeechEngine();
             var names = from c in engines
-                        select c.LibraryName;
+                        where Environment.Is64BitProcess == c.Is64BitProcess
+                        select $"{c.LibraryName} [{c.EngineName}]" ;
             return names.ToArray();
         }
 
-        private static void OneShotPlayMode(string libraryName, string text, EngineParameters ep)
+        private static void OneShotPlayMode(string libraryName, string engineName, string text, EngineParameters ep)
         {
             var engines = SpeechController.GetAllSpeechEngine();
-            var engine = SpeechController.GetInstance(libraryName);
+            ISpeechController engine = engineName == "" ?
+                SpeechController.GetInstance(libraryName) : SpeechController.GetInstance(libraryName, engineName);
+            Console.WriteLine($"<= {libraryName} [{engineName}]: {text}"); 
+
             if (engine == null)
             {
                 Console.WriteLine($"{libraryName} を起動できませんでした。");

@@ -43,6 +43,18 @@ namespace Speech
             }
             return null;
         }
+        public static ISpeechController GetInstance(string libraryName, string engineName)
+        {
+            var info = GetAllSpeechEngine();
+            foreach (var e in info)
+            {
+                if (e.LibraryName == libraryName && e.EngineName == engineName)
+                {
+                    return GetInstance(e);
+                }
+            }
+            return null;
+        }
 
         public static ISpeechController GetInstance(SpeechEngineInfo info)
         {
