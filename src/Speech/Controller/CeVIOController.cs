@@ -75,12 +75,31 @@ namespace Speech
             _assembly = Assembly.LoadFrom(_cevio.AssemblyPath);
             _serviceControl = _assembly.GetType("CeVIO.Talk.RemoteService.ServiceControl");
 
+            if(_serviceControl==null)
+            {
+                _serviceControl = _assembly.GetType("CeVIO.Talk.RemoteService2.ServiceControl2");
+            }
+
             //// 【CeVIO Creative Studio】起動
             //ServiceControl.StartHost(false);
             MethodInfo startHost = _serviceControl.GetMethod("StartHost");
-            startHost.Invoke(null, new object[] { false });
+            try
+            {
+                startHost.Invoke(null, new object[] { false });
+            }
+            catch
+            {
+                //v2だとエラーがでるけど回避でOK
+            }
 
-            _talker = Activator.CreateInstance(_assembly.GetType("CeVIO.Talk.RemoteService.Talker"), new object[] { Info.LibraryName });
+            if(_assembly.GetType("CeVIO.Talk.RemoteService.Talker")!=null)
+            {
+                _talker = Activator.CreateInstance(_assembly.GetType("CeVIO.Talk.RemoteService.Talker"), new object[] { Info.LibraryName });
+            }
+            else 
+            {
+                _talker = Activator.CreateInstance(_assembly.GetType("CeVIO.Talk.RemoteService2.Talker2"), new object[] { Info.LibraryName });
+            }
         }
 
         /// <summary>
@@ -217,10 +236,21 @@ namespace Speech
                 if (disposing)
                 {
                     // CeVIO を終了する場合はコメントを外す
-                    //MethodInfo closeHost = _serviceControl.GetMethod("CloseHost");
-                    //var hostCloseMode = _assembly.GetType("CeVIO.Talk.RemoteService.HostCloseMode");
-                    //var mode = Enum.Parse(hostCloseMode, "Interrupt"); // Default, Interrupt, NotCancelable
-                    //closeHost.Invoke(null, new object[] { mode });
+                    MethodInfo closeHost = _serviceControl.GetMethod("CloseHost");
+                    var hostCloseMode = _assembly.GetType("CeVIO.Talk.RemoteService.HostCloseMode");
+
+                    if(hostCloseMode==null)
+                    {
+                        hostCloseMode = _assembly.GetType("CeVIO.Talk.RemoteService2.HostCloseMode");
+                        var mode = Enum.Parse(hostCloseMode, "Default"); // Default
+                        closeHost.Invoke(null, new object[] { mode });
+                    }
+                    else
+                    {
+                        var mode = Enum.Parse(hostCloseMode, "Interrupt"); // Default, Interrupt, NotCancelable
+                        closeHost.Invoke(null, new object[] { mode });
+                    }
+
                 }
                 disposedValue = true;
             }
