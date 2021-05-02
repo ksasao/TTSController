@@ -122,7 +122,7 @@ namespace Speech
             {
                 value = 0;
             }
-            _talker.Volume = (int)(value * 50);
+            _talker.Volume = (uint)(value * 50);
         }
         /// <summary>
         /// 音量を取得します
@@ -146,7 +146,7 @@ namespace Speech
             {
                 value = 0;
             }
-            _talker.Speed = (int)(value * 50);
+            _talker.Speed = (uint)(value * 50);
         }
         /// <summary>
         /// 話速を取得します
@@ -171,7 +171,7 @@ namespace Speech
             {
                 value = 0;
             }
-            _talker.Tone = (int)(value * 50);
+            _talker.Tone = (uint)(value * 50);
         }
         /// <summary>
         /// 高さを取得します
@@ -195,7 +195,7 @@ namespace Speech
             {
                 value = 0;
             }
-            _talker.ToneScale = (int)(value * 50);
+            _talker.ToneScale = (uint)(value * 50);
         }
         /// <summary>
         /// 抑揚を取得します

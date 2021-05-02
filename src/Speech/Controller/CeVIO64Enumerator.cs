@@ -8,12 +8,12 @@ using System.Xml.Linq;
 
 namespace Speech
 {
-    public class CeVIOEnumerator : ISpeechEnumerator
+    public class CeVIO64Enumerator : ISpeechEnumerator
     {
         string[] _name = new string[0];
         string _installedPath = "";
-        public const string EngineName = "CeVIO";
-        public CeVIOEnumerator()
+        public const string EngineName = "CeVIO64";
+        public CeVIO64Enumerator()
         {
             Initialize();
         }
@@ -23,9 +23,9 @@ namespace Speech
         {
             List<string> presetName = new List<string>();
 
-            // CeVIO CS6 以前(32bit) を探す
-            string cevioPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)
-                          + @"\CeVIO\CeVIO Creative Studio";
+            // CeVIO CS7 を探す
+            string cevioPath = Environment.ExpandEnvironmentVariables("%ProgramW6432%")
+                          + @"\CeVIO\CeVIO Creative Studio (64bit)";
 
             if (cevioPath != "")
             {
@@ -54,17 +54,18 @@ namespace Speech
             foreach (var v in _name)
             {
                 info.Add(new SpeechEngineInfo {
-                    EngineName = EngineName,
-                    EnginePath = _installedPath,
+                    EngineName = EngineName, 
+                    EnginePath = _installedPath, 
                     LibraryName = v,
-                    Is64BitProcess = false});
+                    Is64BitProcess = true
+                });
             }
             return info.ToArray();
         }
 
         public ISpeechController GetControllerInstance(SpeechEngineInfo info)
         {
-            return EngineName == info.EngineName ? new CeVIOController(info) : null;
+            return EngineName == info.EngineName ? new CeVIO64Controller(info) : null;
         }
     }
 

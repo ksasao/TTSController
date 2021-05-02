@@ -23,6 +23,8 @@ namespace SpeechWebServer
             // インストール済み音声合成ライブラリの列挙
             var names = GetLibraryName();
             Console.WriteLine("インストール済み音声合成ライブラリ");
+            string bit = Environment.Is64BitProcess ? "64 bit" : "32 bit";
+            Console.WriteLine($"※ このアプリケーションは {bit}プロセスのため、{bit}のライブラリのみが列挙されます。");
             Console.WriteLine("-----");
             foreach(var s in names)
             {
@@ -155,7 +157,6 @@ namespace SpeechWebServer
         {
             var engines = SpeechController.GetAllSpeechEngine();
             var names = from c in engines
-                        where Environment.Is64BitProcess == c.Is64BitProcess
                         select $"{c.LibraryName} [{c.EngineName}]" ;
             return names.ToArray();
         }
@@ -165,7 +166,12 @@ namespace SpeechWebServer
             var engines = SpeechController.GetAllSpeechEngine();
             ISpeechController engine = engineName == "" ?
                 SpeechController.GetInstance(libraryName) : SpeechController.GetInstance(libraryName, engineName);
-            Console.WriteLine($"<= {libraryName} [{engineName}]: {text}"); 
+            if(engine == null)
+            {
+                Console.WriteLine($"<= {libraryName} [{engineName}] が見つかりません。x86/x64は区別されます。");
+                return;
+            }
+            Console.WriteLine($"<= {libraryName} [{engine.Info.EngineName}]: {text}"); 
 
             if (engine == null)
             {

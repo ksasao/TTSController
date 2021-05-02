@@ -216,6 +216,9 @@ namespace SpeechSample
             // 音声合成エンジンを起動
             engine.Activate();
             engine.SetVolume(1.0f);
+            engine.SetPitch(1.0f);
+            engine.SetSpeed(1.0f);
+            engine.SetPitchRange(1.0f);
             string message = $"音声合成エンジン {engine.Info.EngineName}、{engine.Info.LibraryName}を起動しました。";
             engine.Play(message); // 音声再生は非同期実行される
             Console.WriteLine(message);
@@ -266,6 +269,8 @@ namespace SpeechSample
             // インストール済み音声合成ライブラリの列挙
             var names = GetLibraryName();
             Console.WriteLine("インストール済み音声合成ライブラリ");
+            string bit = Environment.Is64BitProcess ? "64 bit" : "32 bit";
+            Console.WriteLine($"※ このアプリケーションは {bit}プロセスのため、{bit}のライブラリのみが列挙されます。");
             Console.WriteLine("-----");
             foreach (var s in names)
             {
