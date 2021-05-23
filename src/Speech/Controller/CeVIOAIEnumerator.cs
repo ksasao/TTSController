@@ -24,18 +24,13 @@ namespace Speech
             List<string> presetName = new List<string>();
 
             // CeVIO AI を探す
-            string cevioAIPath = Environment.ExpandEnvironmentVariables("%ProgramW6432%")
+            string cevioPath = Environment.ExpandEnvironmentVariables("%ProgramW6432%")
                           + @"\CeVIO\CeVIO AI\";
+            _installedPath = cevioPath + @"\CeVIO AI.exe";
 
-            string cevioPath = "";
-            if (File.Exists(cevioAIPath + @"CeVIO AI.exe"))
-            {
-                cevioPath = cevioAIPath;
-            }
-            if (cevioPath != "")
+            if (Directory.Exists(cevioPath) && File.Exists(_installedPath))
             {
                 AssemblyPath = cevioPath + @"\CeVIO.Talk.RemoteService2.dll";
-                _installedPath = cevioPath + @"\CeVIO AI.exe";
                 // CeVIOを起動せずにインストールされた音源一覧を取得する
                 string[] talkDirectory = Directory.GetDirectories(Path.Combine(cevioPath, @"Configuration\VocalSource\Talk"));
                 foreach (var d in talkDirectory)

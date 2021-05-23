@@ -26,7 +26,14 @@ namespace SpeechWebServer
             string bit = Environment.Is64BitProcess ? "64 bit" : "32 bit";
             Console.WriteLine($"※ このアプリケーションは {bit}プロセスのため、{bit}のライブラリのみが列挙されます。");
             Console.WriteLine("-----");
-            foreach(var s in names)
+            if (names.Length == 0)
+            {
+                Console.WriteLine("利用可能な音声合成ライブラリが見つかりませんでした。");
+                Console.WriteLine("何かキーを押してください。");
+                Console.ReadKey();
+                return;
+            }
+            foreach (var s in names)
             {
                 Console.WriteLine(s);
             }
@@ -58,7 +65,7 @@ namespace SpeechWebServer
             }
             Console.WriteLine($"待機中...");
 
-            var defaultName = names[0];
+            var defaultName = (SpeechController.GetAllSpeechEngine()).First().LibraryName;
             HttpListener listener = new HttpListener();
             listener.Prefixes.Add($"http://*:{port}/");
             listener.Start();

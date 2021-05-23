@@ -26,11 +26,11 @@ namespace Speech
             // CeVIO CS6 以前(32bit) を探す
             string cevioPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)
                           + @"\CeVIO\CeVIO Creative Studio";
+            _installedPath = cevioPath + @"\CeVIO Creative Studio.exe";
 
-            if (cevioPath != "")
+            if (Directory.Exists(cevioPath) && File.Exists(_installedPath))
             {
                 AssemblyPath = cevioPath + @"\CeVIO.Talk.RemoteService.dll";
-                _installedPath = cevioPath + @"\CeVIO Creative Studio.exe";
                 // CeVIOを起動せずにインストールされた音源一覧を取得する
                 string[] talkDirectory = Directory.GetDirectories(Path.Combine(cevioPath, @"Configuration\VocalSource\Talk"));
                 foreach (var d in talkDirectory)

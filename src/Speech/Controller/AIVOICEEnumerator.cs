@@ -49,6 +49,10 @@ namespace Speech
             }
             return info.ToArray();
         }
+        public override ISpeechController GetControllerInstance(SpeechEngineInfo info)
+        {
+            return EngineName == info.EngineName ? new AIVOICEController(info) : null;
+        }
 
     }
 }

@@ -102,7 +102,7 @@ namespace Speech
         }
 
 
-        public ISpeechController GetControllerInstance(SpeechEngineInfo info)
+        public virtual ISpeechController GetControllerInstance(SpeechEngineInfo info)
         {
             return EngineName == info.EngineName ? new Voiceroid2Controller(info) : null;
         }
