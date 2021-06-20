@@ -41,6 +41,11 @@ namespace Speech
                         var xml = XDocument.Load(config);
                         var doc = xml.Element("VocalSource");
                         string name = doc.Attribute("Name").Value;
+                        // see https://github.com/ksasao/TTSController/issues/5
+                        if (name.IndexOf("Tsurumaki Maki (EN)") >= 0)
+                        {
+                            name = "弦巻マキ (英)";
+                        }
                         presetName.Add(name);
                     }
                 }
