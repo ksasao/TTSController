@@ -69,7 +69,8 @@ namespace Speech
                 _tickCount += _timer.Interval;
 
                 // ここからプロセス間通信＆UI操作(重い)
-                WPFButtonBase playButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 3, 0));
+                //WPFButtonBase playButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 3, 0));
+                WPFButtonBase playButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 0, 0, 1, 3, 0));
                 var d = playButton.LogicalTree();
                 System.Windows.Visibility v = (System.Windows.Visibility)(d[2])["Visibility"]().Core; // [再生]の画像の表示状態
                                                                                                       // ここまで
@@ -91,7 +92,8 @@ namespace Speech
                     {
                         // 喋るべき内容が残っているときは再開
                         string t = _queue.Dequeue();
-                        WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 2));
+//                        WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 2));
+                        WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 0, 0, 1, 2));
                         textbox.EmulateChangeText(t);
 
                         playButton.EmulateClick();
@@ -186,7 +188,9 @@ namespace Speech
             string t = _libraryName + _promptString + text;
             if (_queue.Count == 0)
             {
-                WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 2));
+                //                WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 2));
+                WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 0, 0, 1, 2));
+
                 textbox.EmulateChangeText(t);
                 Play();
             }
@@ -201,7 +205,8 @@ namespace Speech
         /// </summary>
         public void Play()
         {
-            WPFButtonBase playButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 3, 0));
+//            WPFButtonBase playButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 3, 0));
+            WPFButtonBase playButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 0, 0, 1, 3, 0));
             playButton.EmulateClick();
             Application.DoEvents();
             _isPlaying = true;
@@ -214,7 +219,8 @@ namespace Speech
         public void Stop()
         {
             StopSpeech();
-            WPFButtonBase stopButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 3, 1));
+//            WPFButtonBase stopButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 3, 1));
+            WPFButtonBase stopButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 0, 0, 1, 3, 1));
             stopButton.EmulateClick();
         }
 

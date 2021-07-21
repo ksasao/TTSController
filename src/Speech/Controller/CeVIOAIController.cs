@@ -75,7 +75,7 @@ namespace Speech
             _assembly = Assembly.LoadFrom(_cevio.AssemblyPath);
             _serviceControl = _assembly.GetType("CeVIO.Talk.RemoteService2.ServiceControl2");
 
-            //// 【CeVIO Creative Studio】起動
+            //// 【CeVIO AI】起動
             //ServiceControl.StartHost(false);
             MethodInfo startHost = _serviceControl.GetMethod("StartHost");
             startHost.Invoke(null, new object[] { false });
