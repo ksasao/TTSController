@@ -14,6 +14,7 @@ namespace Speech
             new AITalk3Enumerator(),
             new VoiceroidPlusEnumerator(),
             new Voiceroid2Enumerator(),
+            new Voiceroid64Enumerator(),
             new GynoidTalkEnumerator(),
             new OtomachiUnaTalkEnumerator(),
             new CeVIOEnumerator(),
