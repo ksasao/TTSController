@@ -43,9 +43,12 @@ namespace Speech
         {
             List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
             string path = GetInstalledPath();
-            foreach (var v in _name)
+            if(!string.IsNullOrEmpty(path))
             {
-                info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = path, LibraryName = v, Is64BitProcess = true }) ;
+                foreach (var v in _name)
+                {
+                    info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = path, LibraryName = v, Is64BitProcess = true }) ;
+                }
             }
             return info.ToArray();
         }
