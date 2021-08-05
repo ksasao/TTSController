@@ -29,7 +29,7 @@
 |ガイノイドTALK|鳴花ヒメ, 鳴花ミコト|
 |A.I.VOICE|琴葉 茜,琴葉 茜（蕾）,琴葉 茜,琴葉 茜（蕾）|
 |CeVIO CS6 / CS7|さとうささら, すずきつづみ, タカハシ|
-|CeVIO AI|小春六花,弦巻マキ (英),弦巻マキ (日) ※ライセンスエラーが出る場合は [#5](https://github.com/ksasao/TTSController/issues/5) へお知らせください|
+|CeVIO AI|さとうささら,小春六花,弦巻マキ (英),弦巻マキ (日) ※ライセンスエラーが出る場合は [#5](https://github.com/ksasao/TTSController/issues/5) へお知らせください|
 |SAPI5|Microsoft Haruka Desktop, Microsoft David Desktop, Microsoft Zira Desktop, Microsoft Irina Desktop|
 
 ## ブラウザで音声合成する
