@@ -91,25 +91,31 @@ namespace Speech
             string queryData = "";
             using (var client = new HttpClient())
             {
-                var response = client.PostAsync($"http://localhost:50021/audio_query?text={encodeText}&speaker={talkerNo}",content).GetAwaiter().GetResult();
-                if (response.StatusCode != HttpStatusCode.OK) { return; }
-                queryData = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-
-                content = new StringContent(queryData, Encoding.UTF8, @"application/json");
-                response = client.PostAsync($"http://localhost:50021/synthesis?speaker={talkerNo}", content).GetAwaiter().GetResult();
-                if (response.StatusCode != HttpStatusCode.OK) { return; }
-
-                var soundData = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
-
-                using (var fileStream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                try
                 {
-                    soundData.CopyTo(fileStream);
+                    var response = client.PostAsync($"http://localhost:50021/audio_query?text={encodeText}&speaker={talkerNo}", content).GetAwaiter().GetResult();
+                    if (response.StatusCode != HttpStatusCode.OK) { return; }
+                    queryData = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
+                    content = new StringContent(queryData, Encoding.UTF8, @"application/json");
+                    response = client.PostAsync($"http://localhost:50021/synthesis?speaker={talkerNo}", content).GetAwaiter().GetResult();
+                    if (response.StatusCode != HttpStatusCode.OK) { return; }
+
+                    var soundData = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+
+                    using (var fileStream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        soundData.CopyTo(fileStream);
+
+                    }
+
+                    SoundPlayer sp = new SoundPlayer();
+                    sp.Play(tempFile);
                 }
-
-                SoundPlayer sp = new SoundPlayer();
-                sp.Play(tempFile);
-                OnFinished(); 
+                finally
+                {
+                    OnFinished();
+                }
             }
 
         }
