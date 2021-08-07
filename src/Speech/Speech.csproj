@@ -117,6 +117,8 @@
     <Compile Include="Controller\ISpeechController.cs" />
     <Compile Include="Controller\AITalk3Controller.cs" />
     <Compile Include="Controller\AITalk3Enumerator.cs" />
+    <Compile Include="Controller\VoiceVoxController.cs" />
+    <Compile Include="Controller\VoiceVoxEnumerator.cs" />
     <Compile Include="Effect\Wave.cs" />
     <Compile Include="Effect\Whisper.cs" />
     <Compile Include="EngineParameters.cs" />
