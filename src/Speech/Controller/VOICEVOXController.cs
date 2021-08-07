@@ -109,6 +109,7 @@ namespace Speech
 
                 SoundPlayer sp = new SoundPlayer();
                 sp.Play(tempFile);
+                OnFinished(); 
             }
 
         }
