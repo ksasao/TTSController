@@ -43,7 +43,8 @@ namespace Speech
         {
             List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
             string path = GetInstalledPath();
-            if(!string.IsNullOrEmpty(path))
+            // インストール先のパスが見つからない場合はSpeechEngineInfoを追加しない
+            if (!string.IsNullOrEmpty(path))
             {
                 foreach (var v in _name)
                 {
