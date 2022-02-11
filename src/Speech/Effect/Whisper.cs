@@ -117,7 +117,7 @@ namespace Speech.Effect
 
             //デエンファシス
             for (int i = 1; i < length; i++) v1[i] = Lpf * v1[i - 1] + v1[i];
-            for (int i = 1; i < length; i++) v2[i] = 0.97 * v2[i - 1] + v2[i];
+            for (int i = 1; i < length; i++) v2[i] = Lpf * v2[i - 1] + v2[i];
 
             wave.Data = v1;
             wave.EData = v2;
