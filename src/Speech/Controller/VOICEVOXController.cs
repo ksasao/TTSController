@@ -29,16 +29,14 @@ namespace Speech
         public SpeechEngineInfo Info { get; private set; }
 
         string _libraryName;
-        Assembly _assembly;
-        Type _serviceControl;
 
-        VOICEVOXEnumerator _voicebox;
+        VOICEVOXEnumerator _voicevox;
 
         public VOICEVOXController(SpeechEngineInfo info)
         {
             Info = info;
 
-            _voicebox = new VOICEVOXEnumerator();
+            _voicevox = new VOICEVOXEnumerator();
             _libraryName = info.LibraryName;
         }
 
@@ -84,9 +82,7 @@ namespace Speech
             var content = new StringContent("", Encoding.UTF8, @"application/json");
             var encodeText = Uri.EscapeDataString(text);
 
-            int talkerNo = 0;
-            if (_libraryName == "四国めたん") { talkerNo = 0; }
-            if (_libraryName == "ずんだもん") { talkerNo = 1; }
+            int talkerNo = _voicevox.Names[_libraryName];
 
             string queryData = "";
             using (var client = new HttpClient())
