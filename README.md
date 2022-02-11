@@ -31,7 +31,7 @@
 |A.I.VOICE|琴葉 茜,琴葉 茜（蕾）,琴葉 茜,琴葉 茜（蕾）,Kotonoha Akane (English),Kotonoha Aoi (English)|
 |CeVIO CS6 / CS7|さとうささら, すずきつづみ, タカハシ|
 |CeVIO AI|さとうささら, 小春六花, 弦巻マキ (英), 弦巻マキ (日) ※ライセンスエラーが出る場合は [#5](https://github.com/ksasao/TTSController/issues/5) へお知らせください|
-|VOICEVOX|四国めたん,ずんだもん|
+|VOICEVOX|四国めたん,ずんだもん,春日部つむぎ,雨晴はう,波音リツ|
 |SAPI5|Microsoft Haruka Desktop, Microsoft David Desktop, Microsoft Zira Desktop, Microsoft Irina Desktop|
 
 ## ブラウザで音声合成する
