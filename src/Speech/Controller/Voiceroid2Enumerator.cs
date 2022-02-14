@@ -66,6 +66,10 @@ namespace Speech
                     PromptString = "";
                 }
             }
+            else
+            {
+                _name = new string[0];
+            }
         }
         public virtual SpeechEngineInfo[] GetSpeechEngineInfo()
         {

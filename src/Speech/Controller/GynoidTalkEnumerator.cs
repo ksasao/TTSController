@@ -10,8 +10,6 @@ namespace Speech
 {
     class GynoidTalkEnumerator : Voiceroid2Enumerator
     {
-        string[] _name = new string[0];
-
         public GynoidTalkEnumerator()
         {
             // ガイノイドトークの一覧は下記で取得できる
