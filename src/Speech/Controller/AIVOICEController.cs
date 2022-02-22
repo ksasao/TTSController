@@ -1,51 +1,54 @@
-﻿using Codeer.Friendly;
-using Codeer.Friendly.Windows;
-using Codeer.Friendly.Windows.Grasp;
-using RM.Friendly.WPFStandardControls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
-using System.Windows.Forms;
-using System.Windows.Threading;
 
 namespace Speech
 {
     public class AIVOICEController : MarshalByRefObject, IDisposable, ISpeechController
     {
-        WindowsAppFriend _app;
+        public class Master
+        {
+            public float Volume { get; set; } = 1;
+            public float Speed { get; set; } = 1;
+            public float Pitch { get; set; } = 1;
+            public float PitchRange { get; set; } = 1;
+            public bool IsPauseEnabled { get; set; } = true;
+            public int MiddlePause { get; set; } = 150;
+            public int LongPause { get; set; } = 370;
+            public int SentencePause { get; set; } = 800;
+            public float VolumeDecibel { get; set; } = 0;
+            public float PitchCent { get; set; } = 0;
+            public float PitchHalfTone { get; set; } = 0;
+            public float PitchRangePercent { get; set; } = 100;
+        }
+
         Process _process;
-        WindowControl _root;
         System.Timers.Timer _timer; // 状態監視のためのタイマー
         Queue<string> _queue = new Queue<string>();
+        dynamic _ttsControl = null;
 
         public delegate bool EnumWindowsDelegate(IntPtr hWnd, IntPtr lparam);
         static int _pid = 0;
 
-        [DllImport("User32.dll")]
-        static extern int SetForegroundWindow(IntPtr hWnd);
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
         public SpeechEngineInfo Info { get; private set; }
 
         /// <summary>
-        /// Voiceroid のフルパス
+        /// A.I.VOICE のフルパス
         /// </summary>
-        public string VoiceroidPath { get; private set; }
+        public string AIVOICEPath { get; private set; }
 
         string _libraryName;
         string _promptString;
         bool _isPlaying = false;
-        bool _isRunning = false;
-        double _tickCount = 0;
         public AIVOICEController(SpeechEngineInfo info)
         {
             Info = info;
@@ -53,7 +56,7 @@ namespace Speech
             var aivoice = new AIVOICEEnumerator();
             _promptString = aivoice.PromptString;
 
-            VoiceroidPath = info.EnginePath;
+            AIVOICEPath = info.EnginePath;
             _libraryName = info.LibraryName;
             _timer = new System.Timers.Timer(100);
             _timer.Elapsed += timer_Elapsed;
@@ -64,47 +67,21 @@ namespace Speech
         private void timer_Elapsed(object sender, EventArgs e)
         {
             _timer.Stop(); // 途中の処理が重いため、タイマーをいったん止める
-            lock (_lockObject)
+            if (_queue.Count == 0)
             {
-                _tickCount += _timer.Interval;
-
-                // ここからプロセス間通信＆UI操作(重い)
-                //WPFButtonBase playButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 3, 0));
-                WPFButtonBase playButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 0, 0, 1, 3, 0));
-                var d = playButton.LogicalTree();
-                System.Windows.Visibility v = (System.Windows.Visibility)(d[2])["Visibility"]().Core; // [再生]の画像の表示状態
-                                                                                                      // ここまで
-
-                if (v != System.Windows.Visibility.Visible && !_isRunning)
-                {
-                    _isRunning = true;
-                }
-                else
-                // 再生開始から 500 ミリ秒程度経過しても再生ボタンがうまく確認できなかった場合にも完了とみなす
-                if (v == System.Windows.Visibility.Visible && (_isRunning || (!_isRunning && _tickCount > 500)))
-                {
-                    if (_queue.Count == 0)
-                    {
-                        StopSpeech();
-                        return; // タイマーが止まったまま終了
-                    }
-                    else
-                    {
-                        // 喋るべき内容が残っているときは再開
-                        string t = _queue.Dequeue();
-//                        WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 2));
-                        WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 0, 0, 1, 2));
-                        textbox.EmulateChangeText(t);
-
-                        playButton.EmulateClick();
-                        _isPlaying = true;
-                        _isRunning = false;
-                        _tickCount = 0;
-                    }
-                }
-
-                _timer.Start();
+                StopSpeech();
+                return; // タイマーが止まったまま終了
             }
+            else
+            {
+                // 喋るべき内容が残っているときは再開
+                string t = _queue.Dequeue();
+                _ttsControl.Text = t;
+                Play();
+                _isPlaying = true;
+            }
+            _timer.Start();
+
         }
 
         private void StopSpeech()
@@ -112,10 +89,8 @@ namespace Speech
             _timer.Stop();
             lock (_lockObject)
             {
-                _tickCount = 0;
                 if (_isPlaying)
                 {
-                    _isRunning = false;
                     _isPlaying = false;
                     OnFinished();
                 }
@@ -133,17 +108,17 @@ namespace Speech
         }
 
         /// <summary>
-        /// Voiceroid が起動中かどうかを確認
+        /// A.I.VOICE が起動中かどうかを確認
         /// </summary>
         /// <returns>起動中であれば true</returns>
         public bool IsActive()
         {
-            string name = Path.GetFileNameWithoutExtension(VoiceroidPath);
+            string name = Path.GetFileNameWithoutExtension(AIVOICEPath);
             Process[] localByName = Process.GetProcessesByName(name);
 
             if (localByName.Length > 0)
             {
-                // VOICEROID2 は２重起動しないはずなので 0番目を参照する
+                // A.I.VOICE  は２重起動しないはずなので 0番目を参照する
                 _process = localByName[0];
                 _pid = _process.Id;
                 return true;
@@ -152,26 +127,25 @@ namespace Speech
         }
 
         /// <summary>
-        /// Voiceroidを起動する。すでに起動している場合には起動しているものを操作対象とする。
+        /// A.I.VOICEを起動する。すでに起動している場合には起動しているものを操作対象とする。
         /// </summary>
         public void Activate()
         {
+            string path =
+                Environment.ExpandEnvironmentVariables("%ProgramW6432%")
+                + @"\AI\AIVoice\AIVoiceEditor\AI.Talk.Editor.Api.dll";
+            Assembly assembly = Assembly.LoadFrom(path);
+            Type type = assembly.GetType("AI.Talk.Editor.Api.TtsControl");
+            _ttsControl = Activator.CreateInstance(type, new object[] { });
+
+            var names = _ttsControl.GetAvailableHostNames();
+            _ttsControl.Initialize(names[0]); // names[0] = "A.I.VOICE Editor"
+
             if (!IsActive())
             {
-                _app = new WindowsAppFriend(Process.Start(this.VoiceroidPath));
-                while (_root == null || (_root != null && _root.TypeFullName != "AI.Talk.Editor.MainWindow"))
-                {
-                    _process = Process.GetProcessById(_app.ProcessId);
-                    _root = WindowControl.GetTopLevelWindows(_app)[0];
-                    Thread.Sleep(2000);
-                }
+                _ttsControl.StartHost();
             }
-            else
-            {
-                _app = new WindowsAppFriend(_process);
-                _process = Process.GetProcessById(_app.ProcessId);
-                _root = WindowControl.GetTopLevelWindows(_app)[0];
-            }
+            _ttsControl.Connect();
         }
 
         /// <summary>
@@ -188,10 +162,7 @@ namespace Speech
             string t = _libraryName + _promptString + text;
             if (_queue.Count == 0)
             {
-                //                WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 2));
-                WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 0, 0, 1, 2));
-
-                textbox.EmulateChangeText(t);
+                _ttsControl.Text = t;
                 Play();
             }
             else
@@ -201,27 +172,57 @@ namespace Speech
         }
 
         /// <summary>
-        /// VOICEROID2 に入力された文字列を再生します
+        /// A.I.VOICE に入力された文字列を再生します
         /// </summary>
         public void Play()
         {
-//            WPFButtonBase playButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 3, 0));
-            WPFButtonBase playButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 0, 0, 1, 3, 0));
-            playButton.EmulateClick();
-            Application.DoEvents();
+            long ms = _ttsControl.GetPlayTime();
+            _ttsControl.Play();
             _isPlaying = true;
-            _isRunning = false;
+            _timer.Interval = ms;
             _timer.Start();
         }
+
+        private string ConvertToJson(Master master)
+        {
+            // この順序の JSON でないと正しくUIに反映されない模様...
+            return "{ \"Volume\" : " + master.Volume + ", " +
+                "\"Pitch\" : " + master.Pitch + ", " +
+                "\"Speed\" : " + master.Speed + ", " +
+                "\"PitchRange\" : " + master.PitchRange + ", " +
+                "\"MiddlePause\" : " + master.MiddlePause + ", " +
+                "\"LongPause\" : " + master.LongPause + ", " +
+                "\"SentencePause\" : " + master.SentencePause + " }";
+        }
+        private Master ConvertToMaster(string json)
+        {
+            var serializer = new DataContractJsonSerializer(typeof(Master));
+            using (var mst = new MemoryStream(Encoding.UTF8.GetBytes(json)))
+            {
+                return (Master)serializer.ReadObject(mst);
+            }
+        }
+
+        private Master GetMaster()
+        {
+            var json = _ttsControl.MasterControl;
+            Master master = ConvertToMaster(json);
+            return master;
+        }
+
+        private void SetMaster(Master master)
+        {
+            string json = ConvertToJson(master);
+            _ttsControl.MasterControl = json;
+        }
+
         /// <summary>
-        /// VOICEROID2 の再生を停止します（停止ボタンを押す）
+        /// A.I.VOICE の再生を停止します
         /// </summary>
         public void Stop()
         {
             StopSpeech();
-//            WPFButtonBase stopButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 3, 1));
-            WPFButtonBase stopButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 6, 3, 0, 0, 0, 1, 3, 1));
-            stopButton.EmulateClick();
+            _ttsControl.Stop();
         }
 
         enum EffectType { Volume = 0, Speed = 1, Pitch = 2, PitchRange = 3 }
@@ -231,7 +232,10 @@ namespace Speech
         /// <param name="value">0.0～2.0</param>
         public void SetVolume(float value)
         {
-            SetEffect(EffectType.Volume, value);
+            Master master = GetMaster();
+            master.Volume = value;
+            Thread.Sleep(1000);
+            SetMaster(master);
         }
         /// <summary>
         /// 音量を取得します
@@ -239,7 +243,7 @@ namespace Speech
         /// <returns>音量</returns>
         public float GetVolume()
         {
-            return GetEffect(EffectType.Volume);
+            return GetMaster().Volume;
         }
         /// <summary>
         /// 話速を設定します
@@ -247,7 +251,9 @@ namespace Speech
         /// <param name="value">0.5～4.0</param>
         public void SetSpeed(float value)
         {
-            SetEffect(EffectType.Speed, value);
+            Master master = GetMaster();
+            master.Speed = value;
+            SetMaster(master);
         }
         /// <summary>
         /// 話速を取得します
@@ -255,7 +261,7 @@ namespace Speech
         /// <returns>話速</returns>
         public float GetSpeed()
         {
-            return GetEffect(EffectType.Speed);
+            return GetMaster().Speed;
         }
 
         /// <summary>
@@ -264,7 +270,9 @@ namespace Speech
         /// <param name="value">0.5～2.0</param>
         public void SetPitch(float value)
         {
-            SetEffect(EffectType.Pitch, value);
+            Master master = GetMaster();
+            master.Pitch = value;
+            SetMaster(master);
         }
         /// <summary>
         /// 高さを取得します
@@ -272,7 +280,7 @@ namespace Speech
         /// <returns>高さ</returns>
         public float GetPitch()
         {
-            return GetEffect(EffectType.Pitch);
+            return GetMaster().Pitch;
         }
         /// <summary>
         /// 抑揚を設定します
@@ -280,7 +288,9 @@ namespace Speech
         /// <param name="value">0.0～2.0</param>
         public void SetPitchRange(float value)
         {
-            SetEffect(EffectType.PitchRange, value);
+            Master master = GetMaster();
+            master.PitchRange = value;
+            SetMaster(master);
         }
         /// <summary>
         /// 抑揚を取得します
@@ -288,18 +298,7 @@ namespace Speech
         /// <returns>抑揚</returns>
         public float GetPitchRange()
         {
-            return GetEffect(EffectType.PitchRange);
-        }
-
-        private void SetEffect(EffectType t, float value)
-        {
-            WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 5, 0, 1, 0, 3, 0, 6, (int)t, 0, 7));
-            textbox.EmulateChangeText($"{value:0.00}");
-        }
-        private float GetEffect(EffectType t)
-        {
-            WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 5, 0, 1, 0, 3, 0, 6, (int)t, 0, 7));
-            return Convert.ToSingle(textbox.Text);
+            return GetMaster().PitchRange;
         }
 
         #region IDisposable Support
@@ -311,9 +310,9 @@ namespace Speech
             {
                 if (disposing)
                 {
-                    if (_app != null)
+                    if (_ttsControl != null)
                     {
-                        _app.Dispose();
+                        _ttsControl.Disconnect();
                     }
                 }
                 disposedValue = true;
