@@ -234,7 +234,6 @@ namespace Speech
         {
             Master master = GetMaster();
             master.Volume = value;
-            Thread.Sleep(1000);
             SetMaster(master);
         }
         /// <summary>
