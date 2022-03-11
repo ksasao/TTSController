@@ -48,7 +48,7 @@ namespace Speech
         }
 
         private WaveFileWriter _writer = null;
-        private WasapiLoopbackCapture _capture = null;
+        private IWaveIn _capture = null;
         private bool disposedValue;
 
         /// <summary>
@@ -65,14 +65,15 @@ namespace Speech
         /// 出力先のファイル名を取得または設定します
         /// </summary>
         public string OutputPath { get; set; }
+
         public SoundRecorder(string filename)
         {
             OutputPath = filename;
+            _capture = new WasapiLoopbackCapture();
         }
         public async Task Start()
         {
             _finished = false;
-            _capture = new WasapiLoopbackCapture();
             _writer = new WaveFileWriter(OutputPath, _capture.WaveFormat);
             _capture.DataAvailable += (s, a) =>
             {

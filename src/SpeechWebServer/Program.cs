@@ -1,5 +1,6 @@
 ﻿using AudioSwitcher.AudioApi.CoreAudio;
 using Speech;
+using Speech.Effect;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -17,8 +19,14 @@ namespace SpeechWebServer
         static IEnumerable<CoreAudioDevice> devices;
         static int port = 1000;
 
+        [MTAThread] // COMオブジェクト(以下のコードでは音声の録音)をTask中で使う場合に必要
         static void Main(string[] args)
         {
+            // AudioSwitcher.AudioApi.CoreAudio (スピーカーの列挙に利用) より先に
+            // SoundRecorder 内で利用している NAudio を呼びださないと COM Exception と
+            // なるため、ダミーで実行しておく
+            // https://github.com/naudio/NAudio/issues/421
+            SoundRecorder recorder = new SoundRecorder("dummy.wav");
 
             // インストール済み音声合成ライブラリの列挙
             var names = GetLibraryName();
@@ -69,6 +77,8 @@ namespace SpeechWebServer
             HttpListener listener = new HttpListener();
             listener.Prefixes.Add($"http://*:{port}/");
             listener.Start();
+
+
             while (true)
             {
                 HttpListenerResponse response = null;
@@ -137,23 +147,37 @@ namespace SpeechWebServer
                     {
                         engineName = queryString["engine"];
                     }
-
+                    bool whisper = false;
+                    if (queryString["whisper"] != null && queryString["whisper"].ToLower()=="true")
+                    {
+                        whisper = true;
+                    }
 
                     Console.WriteLine("=> " + context.Request.RemoteEndPoint.Address);
 
                     response.StatusCode = 200;
                     response.ContentType = "text/plain; charset=utf-8";
                     byte[] content = Encoding.UTF8.GetBytes(voiceText);
-                    
+
                     response.OutputStream.Write(content, 0, content.Length);
-                    OneShotPlayMode(voiceName,engineName, voiceText, ep);
+                    if (!whisper)
+                    {
+                        OneShotPlayMode(voiceName, engineName, voiceText, ep);
+                    }
+                    else
+                    {
+                        WhisperMode(voiceName, engineName, voiceText, ep);
+                    }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error: " + ex.Message);
+                    if(ex.InnerException != null)
+                    {
+                        Console.WriteLine(ex.InnerException.Message);
+                    }
                 }
                 finally
-                
                 {
                     response.Close();
                 }
@@ -168,29 +192,26 @@ namespace SpeechWebServer
             return names.ToArray();
         }
 
-        private static void OneShotPlayMode(string libraryName, string engineName, string text, EngineParameters ep)
+        private static ISpeechController ActivateInstance(string libraryName, string engineName, string text, EngineParameters ep)
         {
             var engines = SpeechController.GetAllSpeechEngine();
             ISpeechController engine = engineName == "" ?
                 SpeechController.GetInstance(libraryName) : SpeechController.GetInstance(libraryName, engineName);
-            if(engine == null)
+            if (engine == null)
             {
                 Console.WriteLine($"<= {libraryName} [{engineName}] が見つかりません。x86/x64は区別されます。");
-                return;
+                return null;
             }
-            Console.WriteLine($"<= {libraryName} [{engine.Info.EngineName}]: {text}"); 
+            Console.WriteLine($"<= {libraryName} [{engine.Info.EngineName}]: {text}");
 
             if (engine == null)
             {
                 Console.WriteLine($"{libraryName} を起動できませんでした。");
-                return;
+                return null;
             }
             engine.Activate();
-            engine.Finished += (s, a) =>
-            {
-                engine.Dispose();
-            };
-            if(ep.Volume > 0)
+
+            if (ep.Volume > 0)
             {
                 engine.SetVolume(ep.Volume);
             }
@@ -206,30 +227,65 @@ namespace SpeechWebServer
             {
                 engine.SetPitchRange(ep.PitchRange);
             }
-            engine.Play(text);
-
+            return engine;
         }
-        public static void RecordMode(string libraryName, string text, string outputFilename)
-        {
-            SoundRecorder recorder = new SoundRecorder(outputFilename);
-            recorder.PostWait = 300;
 
-            var engines = SpeechController.GetAllSpeechEngine();
-            var engine = SpeechController.GetInstance(libraryName);
-            if (engine == null)
+        private static void OneShotPlayMode(string libraryName, string engineName, string text, EngineParameters ep)
+        {
+            var engine = ActivateInstance(libraryName, engineName, text, ep);
+            if(engine == null)
             {
-                Console.WriteLine($"{libraryName} を起動できませんでした。");
-                Console.ReadKey();
                 return;
             }
-            engine.Activate();
             engine.Finished += (s, a) =>
             {
-                recorder.Stop();
                 engine.Dispose();
             };
-            recorder.Start();
             engine.Play(text);
+        }
+
+        private static void WhisperMode(string libraryName,string engineName, string text, EngineParameters ep)
+        {
+            bool finished = false;
+
+            var engine = ActivateInstance(libraryName, engineName, text, ep);
+            if (engine == null)
+            {
+                return;
+            }
+
+            engine.Finished += (s, a) =>
+            {
+                finished = true;
+            };
+            string tempFile = "normal.wav";
+            string whisperFile = "whisper.wav";
+            tempFile = Path.GetFullPath(tempFile);
+            SoundRecorder recorder = new SoundRecorder(tempFile);
+            {
+                recorder.PostWait = 300;
+                Task task = recorder.Start();
+                engine.Play(text);
+                task.Wait();
+            }
+
+            while (!finished)
+            {
+                Thread.Sleep(100);
+            }
+            engine.Dispose();
+            Task t = recorder.Stop();
+            t.Wait();
+            // ささやき声に変換
+            Whisper whisper = new Whisper();
+            Wave wave = new Wave();
+            wave.Read(tempFile);
+            whisper.Convert(wave);
+            wave.Write(whisperFile, wave.Data);
+
+            //// 変換した音声を再生
+            SoundPlayer sp = new SoundPlayer();
+            sp.Play(whisperFile);
         }
         private static void ChangeSpeaker(string name)
         {
