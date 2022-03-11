@@ -26,17 +26,18 @@ namespace Speech
     /// </summary>
     public class VOICEVOXController : IDisposable, ISpeechController
     {
-        public SpeechEngineInfo Info { get; private set; }
+        public SpeechEngineInfo Info { get; internal set; }
 
-        string _libraryName;
+        internal string _libraryName;
+        internal string _baseUrl;
 
-        VOICEVOXEnumerator _voicevox;
+        internal VOICEVOXEnumerator _enumerator;
 
         public VOICEVOXController(SpeechEngineInfo info)
         {
             Info = info;
-
-            _voicevox = new VOICEVOXEnumerator();
+            _enumerator = new VOICEVOXEnumerator();
+            _baseUrl = _enumerator.BaseUrl;
             _libraryName = info.LibraryName;
         }
 
@@ -58,7 +59,7 @@ namespace Speech
         {
             using (var client = new HttpClient())
             {
-                var response = client.GetAsync($"http://localhost:50021/docs").GetAwaiter().GetResult();
+                var response = client.GetAsync($"{_baseUrl}/docs").GetAwaiter().GetResult();
                 return (response.StatusCode == HttpStatusCode.OK);                
             }
         }
@@ -82,19 +83,19 @@ namespace Speech
             var content = new StringContent("", Encoding.UTF8, @"application/json");
             var encodeText = Uri.EscapeDataString(text);
 
-            int talkerNo = _voicevox.Names[_libraryName];
+            int talkerNo = _enumerator.Names[_libraryName];
 
             string queryData = "";
             using (var client = new HttpClient())
             {
                 try
                 {
-                    var response = client.PostAsync($"http://localhost:50021/audio_query?text={encodeText}&speaker={talkerNo}", content).GetAwaiter().GetResult();
+                    var response = client.PostAsync($"{_baseUrl}/audio_query?text={encodeText}&speaker={talkerNo}", content).GetAwaiter().GetResult();
                     if (response.StatusCode != HttpStatusCode.OK) { return; }
                     queryData = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
                     content = new StringContent(queryData, Encoding.UTF8, @"application/json");
-                    response = client.PostAsync($"http://localhost:50021/synthesis?speaker={talkerNo}", content).GetAwaiter().GetResult();
+                    response = client.PostAsync($"{_baseUrl}/synthesis?speaker={talkerNo}", content).GetAwaiter().GetResult();
                     if (response.StatusCode != HttpStatusCode.OK) { return; }
 
                     var soundData = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult();

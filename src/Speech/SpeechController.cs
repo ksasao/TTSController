@@ -21,7 +21,8 @@ namespace Speech
             new CeVIO64Enumerator(),
             new CeVIOAIEnumerator(),
             new SAPI5Enumerator(),
-            new VOICEVOXEnumerator()
+            new VOICEVOXEnumerator(),
+            new COEIROINKEnumerator()
         };
         public static SpeechEngineInfo[] GetAllSpeechEngine()
         {

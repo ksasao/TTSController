@@ -35,22 +35,26 @@ namespace Speech
     public class VOICEVOXEnumerator : ISpeechEnumerator
     {
         string[] _name = new string[0];
-        public const string EngineName = "VOICEVOX";
+        internal string BaseUrl;
+        public string EngineName;
+
         public Dictionary<string, int> Names = new Dictionary<string, int>();
         public VOICEVOXEnumerator()
         {
-            Initialize();
+            Initialize("VOICEVOX","http://localhost:50021");
         }
 
         public string AssemblyPath { get; private set; }
-        private void Initialize()
+        internal void Initialize(string engineName,string baseUrl)
         {
+            EngineName = engineName;
+            BaseUrl = baseUrl;
             List<string> presetName = new List<string>();
             try
             {
                 using (var client = new HttpClient())
                 {
-                    var response = client.GetAsync($"http://localhost:50021/speakers").GetAwaiter().GetResult();
+                    var response = client.GetAsync($"{baseUrl}/speakers").GetAwaiter().GetResult();
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
                         var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
@@ -89,7 +93,7 @@ namespace Speech
             return info.ToArray();
         }
 
-        public ISpeechController GetControllerInstance(SpeechEngineInfo info)
+        public virtual ISpeechController GetControllerInstance(SpeechEngineInfo info)
         {
             return EngineName == info.EngineName ? new VOICEVOXController(info) : null;
         }
