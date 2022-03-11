@@ -14,6 +14,7 @@
 - CeVIO CS6 / CS7
 - CeVIO AI (要x64ビルド)
 - VOICEVOX
+- COEIROINK
 - SAPI5 (Windows10標準の音声合成機能。スタートメニュー>設定>時刻と言語>音声認識>音声の管理>音声の追加から各国語の音声が追加できます。API仕様により追加しても列挙されない音声があります。)
 
 ### 動作確認済みリスト
@@ -31,7 +32,8 @@
 |A.I.VOICE|琴葉 茜,琴葉 茜（蕾）,琴葉 茜,琴葉 茜（蕾）,Kotonoha Akane (English),Kotonoha Aoi (English),結城 香, 足立 レイ|
 |CeVIO CS6 / CS7|さとうささら, すずきつづみ, タカハシ|
 |CeVIO AI|さとうささら, 小春六花, 弦巻マキ (英), 弦巻マキ (日) ※ライセンスエラーが出る場合は [#5](https://github.com/ksasao/TTSController/issues/5) へお知らせください|
-|VOICEVOX|四国めたん,ずんだもん,春日部つむぎ,雨晴はう,波音リツ|
+|VOICEVOX|四国めたん,ずんだもん,春日部つむぎ,雨晴はう,波音リツ,玄野武宏,白上虎太郎,青山龍星,冥鳴ひまり,九州そら|
+|COEIROINK|つくよみちゃん,MANA,おふとんP,ディアちゃん,アルマちゃん|
 |SAPI5|Microsoft Haruka Desktop, Microsoft David Desktop, Microsoft Zira Desktop, Microsoft Irina Desktop|
 
 ## ブラウザで音声合成する
