@@ -66,7 +66,13 @@ namespace Speech
                             foreach (var d in data)
                             {
                                 presetName.Add(d.name);
-                                Names.Add(d.name, d.styles[0].id); // 各話者の最初のIDを利用する
+                                Names.Add(d.name, d.styles[0].id); // スタイル省略時は各話者の最初のIDを利用する
+                                for (int i = 1; i < d.styles.Length; i++) // スタイルは(スタイル名)とする
+                                {
+                                    string styleName = $"{d.name}({d.styles[i].name})";
+                                    presetName.Add(styleName);
+                                    Names.Add(styleName, d.styles[i].id);
+                                }
                             }
                         }
                     }

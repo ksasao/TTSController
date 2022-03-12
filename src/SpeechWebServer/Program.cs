@@ -148,8 +148,13 @@ namespace SpeechWebServer
                         engineName = queryString["engine"];
                     }
                     bool whisper = false;
-                    if (queryString["whisper"] != null && queryString["whisper"].ToLower()=="true")
+                    float rate = 0.02f;
+                    if (queryString["whisper"] != null)
                     {
+                        if (queryString["whisper"].Trim() != "")
+                        {
+                            rate = Convert.ToSingle(queryString["whisper"]);
+                        }
                         whisper = true;
                     }
 
@@ -166,7 +171,7 @@ namespace SpeechWebServer
                     }
                     else
                     {
-                        WhisperMode(voiceName, engineName, voiceText, ep);
+                        WhisperMode(voiceName, engineName, voiceText, ep, rate);
                     }
                 }
                 catch (Exception ex)
@@ -244,7 +249,7 @@ namespace SpeechWebServer
             engine.Play(text);
         }
 
-        private static void WhisperMode(string libraryName,string engineName, string text, EngineParameters ep)
+        private static void WhisperMode(string libraryName,string engineName, string text, EngineParameters ep, float rate)
         {
             bool finished = false;
 
@@ -278,6 +283,7 @@ namespace SpeechWebServer
             t.Wait();
             // ささやき声に変換
             Whisper whisper = new Whisper();
+            whisper.Rate = rate;
             Wave wave = new Wave();
             wave.Read(tempFile);
             whisper.Convert(wave);
