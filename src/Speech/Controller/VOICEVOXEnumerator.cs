@@ -62,7 +62,6 @@ namespace Speech
                         {
                             var sr = new DataContractJsonSerializer(typeof(Speaker[]));
                             var data = sr.ReadObject(ms) as Speaker[];
-                            int id = 0;
                             foreach (var d in data)
                             {
                                 presetName.Add(d.name);

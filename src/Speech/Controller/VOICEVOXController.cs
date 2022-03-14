@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -32,6 +33,9 @@ namespace Speech
         internal string _baseUrl;
 
         internal VOICEVOXEnumerator _enumerator;
+        // "speedScale":1.0,"pitchScale":0.0,"intonationScale":1.0,"volumeScale":1.0
+        internal float Volume { get; set; } = 1.0f;
+        internal float Speed { get; set; } = 1.0f;
 
         public VOICEVOXController(SpeechEngineInfo info)
         {
@@ -72,6 +76,20 @@ namespace Speech
 
         }
 
+        private string UpdateParam(string str)
+        {
+            str = ReplaceParam(str, "volumeScale", Volume);
+            str = ReplaceParam(str,"speedScale", Speed);
+            return str;
+        }
+
+        private string ReplaceParam(string str, string key, float value)
+        {
+            // "pitchScale":0.0,
+            string result = Regex.Replace(str, $"{key}\"\\s*?:\\s*?[\\d\\.]+", $"{key}\":{value:F2}");
+            return result;
+        }
+
         /// <summary>
         /// 指定した文字列を再生します
         /// </summary>
@@ -93,6 +111,9 @@ namespace Speech
                     var response = client.PostAsync($"{_baseUrl}/audio_query?text={encodeText}&speaker={talkerNo}", content).GetAwaiter().GetResult();
                     if (response.StatusCode != HttpStatusCode.OK) { return; }
                     queryData = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                    // 音量等のパラメータを反映させる
+                    queryData = UpdateParam(queryData);
 
                     content = new StringContent(queryData, Encoding.UTF8, @"application/json");
                     response = client.PostAsync($"{_baseUrl}/synthesis?speaker={talkerNo}", content).GetAwaiter().GetResult();
@@ -130,38 +151,37 @@ namespace Speech
         {
         }
 
-        enum EffectType { Volume = 0, Speed = 1, Pitch = 2, PitchRange = 3}
         /// <summary>
-        /// 音量を設定します：この関数は無効です
+        /// 音量を設定します
         /// </summary>
         /// <param name="value">0.0～2.0</param>
         public void SetVolume(float value)
         {
-            
+            Volume = value;
         }
         /// <summary>
-        /// 音量を取得します：この関数は無効です
+        /// 音量を取得します
         /// </summary>
         /// <returns>音量</returns>
         public float GetVolume()
         {
-            return 1;
+            return Volume;
         }
         /// <summary>
-        /// 話速を設定します：この関数は無効です
+        /// 話速を設定します
         /// </summary>
         /// <param name="value">0.5～4.0</param>
         public void SetSpeed(float value)
         {
-
+            Speed = value;
         }
         /// <summary>
-        /// 話速を取得します：この関数は無効です
+        /// 話速を取得します
         /// </summary>
         /// <returns>話速</returns>
         public float GetSpeed()
         {
-            return 1;
+            return Speed;
         }
 
         /// <summary>

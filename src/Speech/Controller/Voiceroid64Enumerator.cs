@@ -9,7 +9,6 @@ namespace Speech
 {
     class Voiceroid64Enumerator : Voiceroid2Enumerator
     {
-        string _installedPath = "";
         public Voiceroid64Enumerator()
         {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
