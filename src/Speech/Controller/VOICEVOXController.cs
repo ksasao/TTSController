@@ -33,9 +33,10 @@ namespace Speech
         internal string _baseUrl;
 
         internal VOICEVOXEnumerator _enumerator;
-        // "speedScale":1.0,"pitchScale":0.0,"intonationScale":1.0,"volumeScale":1.0
         internal float Volume { get; set; } = 1.0f;
         internal float Speed { get; set; } = 1.0f;
+        internal float Pitch { get; set; } = 0.0f;
+        internal float Intonation { get; set; } = 1.0f;
 
         public VOICEVOXController(SpeechEngineInfo info)
         {
@@ -80,6 +81,8 @@ namespace Speech
         {
             str = ReplaceParam(str, "volumeScale", Volume);
             str = ReplaceParam(str,"speedScale", Speed);
+            str = ReplaceParam(str, "intonationScale", Intonation);
+            str = ReplaceParam(str, "pitchScale", Pitch);
             return str;
         }
 
@@ -185,12 +188,12 @@ namespace Speech
         }
 
         /// <summary>
-        /// 高さを設定します：この関数は無効です
+        /// 高さを設定します
         /// </summary>
         /// <param name="value">0.5～2.0</param>
         public void SetPitch(float value)
         {
-           
+            Pitch = value;
         }
         /// <summary>
         /// 高さを取得します
@@ -198,15 +201,15 @@ namespace Speech
         /// <returns>高さ</returns>
         public float GetPitch()
         {
-            return 1;
+            return Pitch;
         }
         /// <summary>
-        /// 抑揚を設定します：この関数は無効です
+        /// 抑揚を設定します
         /// </summary>
         /// <param name="value">0.0～2.0</param>
         public void SetPitchRange(float value)
         {
-           
+            Intonation = value;
         }
         /// <summary>
         /// 抑揚を取得します：この関数は無効です
@@ -214,7 +217,7 @@ namespace Speech
         /// <returns>抑揚</returns>
         public float GetPitchRange()
         {
-            return 1;
+            return Intonation;
         }
 
         
