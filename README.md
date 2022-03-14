@@ -39,7 +39,8 @@
 ## ブラウザで音声合成する
 この実装は簡易実装であり、音声合成ライブラリと同一のPC上で実行することを想定しています。インターネット上への公開は、セキュリティ上のリスクや音声合成ライブラリのライセンス上の問題がある可能性があります。
 
-- [ビルド済み実行ファイル(v0.0.4beta)](https://github.com/ksasao/TTSController/releases/download/v0.0.4beta/SpeechWebServer_v0.0.4.zip) (2020/12/26更新)
+- [ビルド済み実行ファイル64bit版(v0.1.0)](https://github.com/ksasao/TTSController/releases/download/v0.1.0/SpeechWebServer_x64_v0.1.0.zip) (2022/3/15更新)
+- [ビルド済み実行ファイル32bit版(v0.1.0)](https://github.com/ksasao/TTSController/releases/download/v0.1.0/SpeechWebServer_x86_v0.1.0.zip) (2022/3/15更新)
 
 ### 準備
 - SpeechWebServer のプロジェクトを Visual Studio 2019 でビルドして ```SpeechWebServer.exe``` を実行します(管理者権限が必要です)
@@ -47,9 +48,10 @@
 ### 利用方法
 - ブラウザで http://localhost:1000/ を開くと現在の時刻を発話します
 - http://localhost:1000/?text=こんにちは を開くと「こんにちは」と発話します。「こんにちは」の部分は任意の文字列を指定できます
-- http://localhost:1000/?text=おやすみなさい&range=1.2&volume=1.0&pitch=0.8&speed=0.8 のように、音量(volume), 話速(speed), 高さ(pitch), 抑揚(range) を指定できます (かんたん！AITalk3 LITE, CeVIO, SAPI5を除く)
+- http://localhost:1000/?text=おはようございます&range=1.2&volume=1.0&pitch=0.8&speed=0.8 のように、音量(volume), 話速(speed), 高さ(pitch), 抑揚(range) を指定できます (かんたん！AITalk3 LITE, CeVIO, SAPI5を除く)
 - VOICEROID+ 東北きりたんがインストールされている場合、http://localhost:1000/?name=東北きりたん&text=こんばんは を開くと東北きりたんの声で発話します。他の VOICEROID を利用する場合は、アプリ起動時に表示される「インストール済み音声合成ライブラリ」の表記を参考に、適宜 name の引数を変更してください。
 - http://localhost:1000/?text=おはよう&speaker=和室 のように音声を再生するスピーカー名を指定することができます。カッコ内の文字列を前方一致で検索します。なお、Google Home デバイスは Windows から Bluetoothスピーカーとして接続ができ、任意の名前(「和室」など)を付けることが可能です。
+- http://localhost:1000/?text=ささやき声なのだ&name=ずんだもん&whisper=0.02&speed=0.8 のようにwhisperを設定することで、任意の音声をささやき声に変換できます(ささやき声化した音声は whisper.wav として自動的に保存されます)。
 
 ![スピーカー名の表示](https://user-images.githubusercontent.com/179872/103144037-c823f200-4765-11eb-93a3-e202a8621ad2.png)
 
