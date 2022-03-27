@@ -167,11 +167,11 @@ namespace SpeechWebServer
                     response.OutputStream.Write(content, 0, content.Length);
                     if (!whisper)
                     {
-                        OneShotPlayMode(voiceName, engineName, voiceText, ep);
+                        OneShotPlayMode(voiceName, engineName, voiceText, location, ep);
                     }
                     else
                     {
-                        WhisperMode(voiceName, engineName, voiceText, ep, rate);
+                        WhisperMode(voiceName, engineName, voiceText, location, ep, rate);
                     }
                 }
                 catch (Exception ex)
@@ -197,7 +197,7 @@ namespace SpeechWebServer
             return names.ToArray();
         }
 
-        private static ISpeechController ActivateInstance(string libraryName, string engineName, string text, EngineParameters ep)
+        private static ISpeechController ActivateInstance(string libraryName, string engineName, string text, string location, EngineParameters ep)
         {
             var engines = SpeechController.GetAllSpeechEngine();
             ISpeechController engine = engineName == "" ?
@@ -207,7 +207,7 @@ namespace SpeechWebServer
                 Console.WriteLine($"<= {libraryName} [{engineName}] が見つかりません。x86/x64は区別されます。");
                 return null;
             }
-            Console.WriteLine($"<= {libraryName} [{engine.Info.EngineName}]: {text}");
+            Console.WriteLine($"<= [{engine.Info.EngineName}] {libraryName}{location}: {text}");
 
             if (engine == null)
             {
@@ -235,9 +235,9 @@ namespace SpeechWebServer
             return engine;
         }
 
-        private static void OneShotPlayMode(string libraryName, string engineName, string text, EngineParameters ep)
+        private static void OneShotPlayMode(string libraryName, string engineName, string text, string location, EngineParameters ep)
         {
-            var engine = ActivateInstance(libraryName, engineName, text, ep);
+            var engine = ActivateInstance(libraryName, engineName, text, location, ep);
             if(engine == null)
             {
                 return;
@@ -249,11 +249,11 @@ namespace SpeechWebServer
             engine.Play(text);
         }
 
-        private static void WhisperMode(string libraryName,string engineName, string text, EngineParameters ep, float rate)
+        private static void WhisperMode(string libraryName,string engineName, string text, string location, EngineParameters ep, float rate)
         {
             bool finished = false;
 
-            var engine = ActivateInstance(libraryName, engineName, text, ep);
+            var engine = ActivateInstance(libraryName, engineName, text, location, ep);
             if (engine == null)
             {
                 return;
