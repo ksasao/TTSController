@@ -42,13 +42,12 @@ namespace Speech
 
         public override SpeechEngineInfo[] GetSpeechEngineInfo()
         {
-            List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
-            string path = GetInstalledPath();
-            foreach (var v in _name)
+            var info = base.GetSpeechEngineInfo();
+            foreach(var i in info)
             {
-                info.Add(new SpeechEngineInfo { EngineName = EngineName, EnginePath = path, LibraryName = v, Is64BitProcess = true });
+                i.Is64BitProcess = true;
             }
-            return info.ToArray();
+            return info;
         }
 
         public override ISpeechController GetControllerInstance(SpeechEngineInfo info)
