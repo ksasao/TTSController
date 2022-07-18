@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Speech
 {
@@ -76,6 +77,17 @@ namespace Speech
         /// </summary>
         /// <returns>起動していれば true </returns>
         bool IsActive();
+        /// <summary>
+        /// 音声合成エンジンに設定済みのテキストを音声ファイルとして書き出します
+        /// </summary>
+        /// <returns>出力された音声</returns>
+        Stream Export();
+        /// <summary>
+        /// 文字列を音声ファイルとして書き出します
+        /// </summary>
+        /// <param name="text">再生する文字列</param>
+        /// <returns>出力された音声</returns>
+        Stream Export(string text);
 
     }
 }
