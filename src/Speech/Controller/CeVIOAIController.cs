@@ -263,7 +263,7 @@ namespace Speech
         /// 音声合成エンジンに設定済みのテキストを音声ファイルとして書き出します
         /// </summary>
         /// <returns>出力された音声</returns>
-        public Stream Export()
+        public SoundStream Export()
         {
             throw new NotImplementedException();
         }
@@ -272,7 +272,7 @@ namespace Speech
         /// </summary>
         /// <param name="text">再生する文字列</param>
         /// <returns>出力された音声</returns>
-        public Stream Export(string text)
+        public SoundStream Export(string text)
         {
             throw new NotImplementedException();
         }

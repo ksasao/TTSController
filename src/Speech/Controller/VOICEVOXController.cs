@@ -202,7 +202,7 @@ namespace Speech
         /// <summary>
         /// このメソッドは無効です。発話する文字列を指定してください。
         /// </summary>
-        public Stream Export()
+        public SoundStream Export()
         {
             throw new NotSupportedException("このメソッドは無効です。発話する文字列を指定してください。");
         }
@@ -212,7 +212,7 @@ namespace Speech
         /// </summary>
         /// <param name="text">再生する文字列</param>
         /// <returns>出力された音声</returns>
-        public Stream Export(string text)
+        public SoundStream Export(string text)
         {
             var content = new StringContent("", Encoding.UTF8, @"application/json");
             var encodeText = Uri.EscapeDataString(text);
@@ -233,7 +233,7 @@ namespace Speech
                 response = client.PostAsync($"{_baseUrl}/synthesis?speaker={talkerNo}", content).GetAwaiter().GetResult();
                 if (response.StatusCode != HttpStatusCode.OK) { return null; }
 
-                return response.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+                return new SoundStream(response.Content.ReadAsStreamAsync().GetAwaiter().GetResult());
             }
         }
 

@@ -140,6 +140,7 @@
     <Compile Include="SoundRecorder.cs" />
     <Compile Include="Controller\SAPI5Enumerator.cs" />
     <Compile Include="SoundPlayer.cs" />
+    <Compile Include="SoundStream.cs" />
     <Compile Include="SpeechEngineInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controller\SAPI5Controller.cs" />
