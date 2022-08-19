@@ -116,6 +116,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SaveFileDialog.cs" />
     <Compile Include="Controller\AIVOICEController.cs" />
     <Compile Include="Controller\CeVIOAIController.cs" />
     <Compile Include="Controller\CeVIOAIEnumerator.cs" />
