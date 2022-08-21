@@ -259,7 +259,7 @@ namespace Speech
             return _talker.Alpha;
         }
 
-        public SoundStream Export(string text)
+        public SoundStream ExportToStream(string text)
         {
             string tempFile = Path.GetTempFileName();
             if (_talker.OutputWaveToFile(text, tempFile))

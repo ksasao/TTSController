@@ -468,7 +468,7 @@ namespace Speech
             exsettings.ShowSettings = showSettings.IsChecked.GetValueOrDefault(true);
         }
 
-        public SoundStream Export(string text)
+        public SoundStream ExportToStream(string text)
         {
             if (CheckPlaying())
             {

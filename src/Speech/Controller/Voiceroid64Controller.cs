@@ -314,7 +314,7 @@ namespace Speech
             return Convert.ToSingle(textbox.Text);
         }
 
-        public SoundStream Export(string text)
+        public SoundStream ExportToStream(string text)
         {
             if (CheckPlaying())
             {

@@ -176,7 +176,7 @@ namespace Speech
             return 1f;
         }
 
-        public SoundStream Export(string text)
+        public SoundStream ExportToStream(string text)
         {
             var ms = new MemoryStream();
             synthesizer.SetOutputToWaveStream(ms);

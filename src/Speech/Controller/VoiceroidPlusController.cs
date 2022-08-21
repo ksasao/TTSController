@@ -267,7 +267,7 @@ namespace Speech
             }
         }
 
-        public SoundStream Export(string text)
+        public SoundStream ExportToStream(string text)
         {
             SetText(text);
 

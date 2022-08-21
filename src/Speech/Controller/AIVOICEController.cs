@@ -300,7 +300,7 @@ namespace Speech
             return GetMaster().PitchRange;
         }
 
-        public SoundStream Export(string text)
+        public SoundStream ExportToStream(string text)
         {
             throw new NotImplementedException();
         }

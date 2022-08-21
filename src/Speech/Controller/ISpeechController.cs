@@ -82,7 +82,7 @@ namespace Speech
         /// </summary>
         /// <param name="text">合成する文字列</param>
         /// <returns>出力された音声の Stream</returns>
-        SoundStream Export(string text);
+        SoundStream ExportToStream(string text);
 
     }
 }

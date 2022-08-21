@@ -102,7 +102,7 @@ namespace Speech
             string tempFile = Path.GetTempFileName();
             try
             {
-                var soundData = Export(text);
+                var soundData = ExportToStream(text);
 
                 using (var fileStream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
@@ -200,7 +200,7 @@ namespace Speech
             return Intonation;
         }
 
-        public SoundStream Export(string text)
+        public SoundStream ExportToStream(string text)
         {
             var content = new StringContent("", Encoding.UTF8, @"application/json");
             var encodeText = Uri.EscapeDataString(text);
