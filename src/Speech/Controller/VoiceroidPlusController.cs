@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Threading;
@@ -120,9 +121,7 @@ namespace Speech
         /// <param name="text">再生する文字列</param>
         public void Play(string text)
         {
-            WindowControl speechTextBox = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 1, 1);
-            AppVar textbox = speechTextBox.AppVar;
-            textbox["Text"](text);
+            SetText(text);
             Play();
         }
         /// <summary>
@@ -139,6 +138,12 @@ namespace Speech
                 _playStarting = true;
                 _timer.Start();
             }
+        }
+        internal virtual void SetText(string text)
+        {
+            WindowControl speechTextBox = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 1, 1);
+            AppVar textbox = speechTextBox.AppVar;
+            textbox["Text"](text);
         }
         /// <summary>
         /// VOICEROID+ の再生を停止します（停止ボタンを押す）
@@ -277,7 +282,34 @@ namespace Speech
         /// <returns>出力された音声</returns>
         public SoundStream Export(string text)
         {
-            throw new NotImplementedException();
+            SetText(text);
+
+            WindowControl playButton = _root.IdentifyFromZIndex(2, 0, 0, 1, 0, 1, 0, 1);
+            AppVar button = playButton.AppVar;
+            string ButtonText = (string)button["Text"]().Core;
+            if (ButtonText.Trim() != "音声保存")
+            {
+                return null;
+            }
+            var saveTask = Task.Run(() => button["PerformClick"]());
+            var saveFileDialog = new SaveFileDialog(_root.WaitForNextModal());
+
+            var filePathBase = Path.Combine(Path.GetTempPath(), $"{this.GetType().Name}_{(uint)text.GetHashCode()}");
+            var filePath = $"{filePathBase}.wav";
+            var textFilePath = $"{filePathBase}.txt";
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            if (File.Exists(textFilePath))
+            {
+                // テキストファイルを出力する設定の場合テキストファイルが出力されるので削除する
+                File.Delete(textFilePath);
+            }
+            saveFileDialog.Save(filePath);
+
+            saveTask.Wait();
+            return SoundStream.Open(filePath);
         }
 
         #region IDisposable Support
