@@ -199,13 +199,6 @@ namespace Speech
         {
             return Intonation;
         }
-        /// <summary>
-        /// このメソッドは無効です。発話する文字列を指定してください。
-        /// </summary>
-        public SoundStream Export()
-        {
-            throw new NotSupportedException("このメソッドは無効です。発話する文字列を指定してください。");
-        }
 
         /// <summary>
         /// 文字列を音声ファイルとして書き出します

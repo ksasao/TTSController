@@ -317,15 +317,6 @@ namespace Speech
         }
 
         /// <summary>
-        /// 音声合成エンジンに設定済みのテキストを音声ファイルとして書き出します
-        /// </summary>
-        /// <returns>出力された音声</returns>
-        public SoundStream Export()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// ファイル分割設定
         /// </summary>
         enum ExportSplitSetting
