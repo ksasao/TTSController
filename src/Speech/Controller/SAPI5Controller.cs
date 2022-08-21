@@ -183,7 +183,12 @@ namespace Speech
         /// <returns>出力された音声</returns>
         public SoundStream Export(string text)
         {
-            throw new NotImplementedException();
+            var ms = new MemoryStream();
+            synthesizer.SetOutputToWaveStream(ms);
+            synthesizer.Speak(text);
+            synthesizer.SetOutputToDefaultAudioDevice();
+            ms.Position = 0;
+            return new SoundStream(ms);
         }
 
         #region IDisposable Support
