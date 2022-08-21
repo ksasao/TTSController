@@ -319,7 +319,7 @@ namespace Speech
         /// <summary>
         /// ファイル分割設定
         /// </summary>
-        enum ExportSplitSetting
+        public enum ExportSplitSetting
         {
             /// <summary>
             /// 一つのファイルに書き出す
@@ -338,7 +338,7 @@ namespace Speech
         /// <summary>
         /// 音声保存設定を保持するクラス
         /// </summary>
-        class ExportSettings
+        public class ExportSettings
         {
             /// <summary>
             /// ファイル分割設定
@@ -402,6 +402,72 @@ namespace Speech
             }
         }
 
+        public static void ExportSetting(WindowControl win, bool isSet, ExportSettings exsettings)
+        {
+            var export1File = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 4));
+            var exportSentence = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 5));
+            var exportSplit = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 6));
+            var splitString = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 7, 1));
+            WPFTextBox pauseStart = null;
+            WPFTextBox pauseEnd = null;
+            try
+            {
+                pauseStart = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 7, 1, 9, 0, 4)); ;
+                pauseEnd = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 7, 1, 12, 0, 4));
+            }
+            catch (WindowIdentifyException e)
+            {
+                // VOICEROID2 Editor 2.1.1.0 で要素が取得できなくなった
+                // 取得に失敗した場合はないものとして扱う
+            }
+            var saveWithText = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 9, 1, 2));
+            var showSettings = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 10));
+            if (isSet)
+            {
+                switch (exsettings.SplitSetting)
+                {
+                    case ExportSplitSetting.OneFile:
+                        export1File.EmulateCheck(true);
+                        break;
+                    case ExportSplitSetting.Sentence:
+                        exportSentence.EmulateCheck(true);
+                        break;
+                    case ExportSplitSetting.Delimiter:
+                        exportSplit.EmulateCheck(true);
+                        break;
+                }
+                splitString.EmulateChangeText(exsettings.SplitString);
+                pauseStart?.EmulateChangeText(exsettings.PauseStart.ToString());
+                pauseEnd?.EmulateChangeText(exsettings.PauseEnd.ToString());
+                saveWithText.EmulateCheck(exsettings.SaveWithText);
+                showSettings.EmulateCheck(exsettings.ShowSettings);
+                return;
+            }
+            if (export1File.IsChecked.GetValueOrDefault(true))
+            {
+                exsettings.SplitSetting = ExportSplitSetting.OneFile;
+            }
+            if (exportSentence.IsChecked.GetValueOrDefault(false))
+            {
+                exsettings.SplitSetting = ExportSplitSetting.Sentence;
+            }
+            if (exportSplit.IsChecked.GetValueOrDefault(false))
+            {
+                exsettings.SplitSetting = ExportSplitSetting.Delimiter;
+            }
+            exsettings.SplitString = splitString.Text;
+            if (pauseStart != null)
+            {
+                exsettings.PauseStart = long.Parse(pauseStart.Text);
+            }
+            if (pauseEnd != null)
+            {
+                exsettings.PauseEnd = long.Parse(pauseEnd.Text);
+            }
+            exsettings.SaveWithText = saveWithText.IsChecked.GetValueOrDefault(false);
+            exsettings.ShowSettings = showSettings.IsChecked.GetValueOrDefault(true);
+        }
+
         /// <summary>
         /// 文字列を音声ファイルとして書き出します
         /// </summary>
@@ -409,72 +475,6 @@ namespace Speech
         /// <returns>出力された音声</returns>
         public SoundStream Export(string text)
         {
-            void Settings(WindowControl win, bool isSet, ExportSettings exsettings)
-            {
-                Functions.WriteTreeIndex(win);
-                var export1File = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 4));
-                var exportSentence = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 5));
-                var exportSplit = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 6));
-                var splitString = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 7, 1));
-                WPFTextBox pauseStart = null;
-                WPFTextBox pauseEnd = null;
-                try
-                {
-                    pauseStart = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 7, 1, 9, 0, 4)); ;
-                    pauseEnd = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 7, 1, 12, 0, 4));
-                }
-                catch (WindowIdentifyException e)
-                {
-                    // VOICEROID2 Editor 2.1.1.0 で要素が取得できなくなった
-                    // 取得に失敗した場合はないものとして扱う
-                }
-                var saveWithText = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 9, 1, 2));
-                var showSettings = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 10));
-                if (isSet)
-                {
-                    switch (exsettings.SplitSetting)
-                    {
-                        case ExportSplitSetting.OneFile:
-                            export1File.EmulateCheck(true);
-                            break;
-                        case ExportSplitSetting.Sentence:
-                            exportSentence.EmulateCheck(true);
-                            break;
-                        case ExportSplitSetting.Delimiter:
-                            exportSplit.EmulateCheck(true);
-                            break;
-                    }
-                    splitString.EmulateChangeText(exsettings.SplitString);
-                    pauseStart?.EmulateChangeText(exsettings.PauseStart.ToString());
-                    pauseEnd?.EmulateChangeText(exsettings.PauseEnd.ToString());
-                    saveWithText.EmulateCheck(exsettings.SaveWithText);
-                    showSettings.EmulateCheck(exsettings.ShowSettings);
-                    return;
-                }
-                if (export1File.IsChecked.GetValueOrDefault(true))
-                {
-                    exsettings.SplitSetting = ExportSplitSetting.OneFile;
-                }
-                if (exportSentence.IsChecked.GetValueOrDefault(false))
-                {
-                    exsettings.SplitSetting = ExportSplitSetting.Sentence;
-                }
-                if (exportSplit.IsChecked.GetValueOrDefault(false))
-                {
-                    exsettings.SplitSetting = ExportSplitSetting.Delimiter;
-                }
-                exsettings.SplitString = splitString.Text;
-                if (pauseStart != null)
-                {
-                    exsettings.PauseStart = long.Parse(pauseStart.Text);
-                }
-                if (pauseEnd != null)
-                {
-                    exsettings.PauseEnd = long.Parse(pauseEnd.Text);
-                }
-                exsettings.SaveWithText = saveWithText.IsChecked.GetValueOrDefault(false);
-                exsettings.ShowSettings = showSettings.IsChecked.GetValueOrDefault(true);
-            }
             if (CheckPlaying())
             {
                 // 再生中だと音声保存メニューを開けない
@@ -499,10 +499,10 @@ namespace Speech
             if (saveWaveWindow.TypeFullName == "AI.Talk.Editor.SaveWaveWindow")
             {
                 ExportSettings settings = new ExportSettings();
-                Settings(saveWaveWindow, false, settings);
+                ExportSetting(saveWaveWindow, false, settings);
                 settings.SplitSetting = ExportSplitSetting.OneFile;
                 settings.SaveWithText = false;
-                Settings(saveWaveWindow, true, settings);
+                ExportSetting(saveWaveWindow, true, settings);
 
                 var okButton = new WPFButtonBase(saveWaveWindow.IdentifyFromLogicalTreeIndex(0, 1, 0));
                 okAsync = new Async();
