@@ -520,7 +520,6 @@ namespace Speech
             while (true)
             {
                 var dialog = _app.FromZTop();
-                var name = dialog.GetWindowText();
                 if (dialog.TypeFullName == "AI.Talk.Editor.ProgressWindow")
                 {
                     Thread.Sleep(50);
