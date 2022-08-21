@@ -266,7 +266,12 @@ namespace Speech
         /// <returns>出力された音声</returns>
         public SoundStream Export(string text)
         {
-            throw new NotImplementedException();
+            string tempFile = Path.GetTempFileName();
+            if (_talker.OutputWaveToFile(text, tempFile))
+            {
+                return SoundStream.Open(tempFile);
+            }
+            return null;
         }
 
 
