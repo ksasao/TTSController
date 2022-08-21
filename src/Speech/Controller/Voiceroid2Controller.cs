@@ -411,12 +411,23 @@ namespace Speech
         {
             void Settings(WindowControl win, bool isSet, ExportSettings exsettings)
             {
+                Functions.WriteTreeIndex(win);
                 var export1File = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 4));
                 var exportSentence = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 5));
                 var exportSplit = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 6));
                 var splitString = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 7, 1));
-                var pauseStart = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 7, 1, 9, 0, 4));
-                var pauseEnd = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 7, 1, 12, 0, 4));
+                WPFTextBox pauseStart = null;
+                WPFTextBox pauseEnd = null;
+                try
+                {
+                    pauseStart = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 7, 1, 9, 0, 4)); ;
+                    pauseEnd = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 7, 1, 12, 0, 4));
+                }
+                catch (WindowIdentifyException e)
+                {
+                    // VOICEROID2 Editor 2.1.1.0 で要素が取得できなくなった
+                    // 取得に失敗した場合はないものとして扱う
+                }
                 var saveWithText = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 9, 1, 2));
                 var showSettings = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 10));
                 if (isSet)
@@ -434,8 +445,8 @@ namespace Speech
                             break;
                     }
                     splitString.EmulateChangeText(exsettings.SplitString);
-                    pauseStart.EmulateChangeText(exsettings.PauseStart.ToString());
-                    pauseEnd.EmulateChangeText(exsettings.PauseEnd.ToString());
+                    pauseStart?.EmulateChangeText(exsettings.PauseStart.ToString());
+                    pauseEnd?.EmulateChangeText(exsettings.PauseEnd.ToString());
                     saveWithText.EmulateCheck(exsettings.SaveWithText);
                     showSettings.EmulateCheck(exsettings.ShowSettings);
                     return;
@@ -453,8 +464,14 @@ namespace Speech
                     exsettings.SplitSetting = ExportSplitSetting.Delimiter;
                 }
                 exsettings.SplitString = splitString.Text;
-                exsettings.PauseStart = long.Parse(pauseStart.Text);
-                exsettings.PauseEnd = long.Parse(pauseEnd.Text);
+                if (pauseStart != null)
+                {
+                    exsettings.PauseStart = long.Parse(pauseStart.Text);
+                }
+                if (pauseEnd != null)
+                {
+                    exsettings.PauseEnd = long.Parse(pauseEnd.Text);
+                }
                 exsettings.SaveWithText = saveWithText.IsChecked.GetValueOrDefault(false);
                 exsettings.ShowSettings = showSettings.IsChecked.GetValueOrDefault(true);
             }
