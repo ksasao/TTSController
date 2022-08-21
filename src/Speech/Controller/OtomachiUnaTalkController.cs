@@ -254,11 +254,6 @@ namespace Speech
             }
         }
 
-        /// <summary>
-        /// 文字列を音声ファイルとして書き出します
-        /// </summary>
-        /// <param name="text">再生する文字列</param>
-        /// <returns>出力された音声</returns>
         public SoundStream Export(string text)
         {
             throw new NotImplementedException();
