@@ -270,7 +270,7 @@ namespace SpeechWebServer
             {
                 engine.Dispose();
             };
-            return engine.Export(text);
+            return engine.ExportToStream(text);
         }
 
         private static void OneShotPlayMode(string libraryName, string engineName, string text, string location, EngineParameters ep)
