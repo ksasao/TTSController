@@ -302,7 +302,19 @@ namespace Speech
 
         public SoundStream ExportToStream(string text)
         {
-            throw new NotImplementedException();
+            _ttsControl.Text = text;
+
+            var filePath = Path.Combine(Path.GetTempPath(), $"{this.GetType().Name}_{(uint)text.GetHashCode()}.wav");
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            _ttsControl.SaveAudioToFile(filePath);
+            if(File.Exists(filePath))
+            {
+                return SoundStream.Open(filePath);
+            }
+            return null;
         }
 
         #region IDisposable Support
