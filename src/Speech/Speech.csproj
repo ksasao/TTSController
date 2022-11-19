@@ -122,6 +122,8 @@
     <Compile Include="Controller\CeVIOAIEnumerator.cs" />
     <Compile Include="Controller\CeVIO64Controller.cs" />
     <Compile Include="Controller\CeVIO64Enumerator.cs" />
+    <Compile Include="Controller\SHAREVOXEnumerator.cs" />
+    <Compile Include="Controller\SHAREVOXController.cs" />
     <Compile Include="Controller\Voiceroid64Enumerator.cs" />
     <Compile Include="Controller\Voiceroid64Controller.cs" />
     <Compile Include="Controller\GynoidTalkController.cs" />
