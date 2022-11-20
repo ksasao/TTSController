@@ -176,6 +176,16 @@ namespace Speech
             return 1f;
         }
 
+        public SoundStream ExportToStream(string text)
+        {
+            var ms = new MemoryStream();
+            synthesizer.SetOutputToWaveStream(ms);
+            synthesizer.Speak(text);
+            synthesizer.SetOutputToDefaultAudioDevice();
+            ms.Position = 0;
+            return new SoundStream(ms);
+        }
+
         #region IDisposable Support
         private bool disposedValue = false;
 

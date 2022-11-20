@@ -56,37 +56,49 @@
     <Reference Include="Codeer.Friendly.Dynamic, Version=2.6.1.0, Culture=neutral, PublicKeyToken=376bc779077733e8, processorArchitecture=MSIL">
       <HintPath>..\packages\Codeer.Friendly.2.6.1\lib\net40\Codeer.Friendly.Dynamic.dll</HintPath>
     </Reference>
-    <Reference Include="Codeer.Friendly.Windows, Version=2.15.0.0, Culture=neutral, PublicKeyToken=532f270f1da385b3, processorArchitecture=MSIL">
-      <HintPath>..\packages\Codeer.Friendly.Windows.2.15.0\lib\net20\Codeer.Friendly.Windows.dll</HintPath>
+    <Reference Include="Codeer.Friendly.Windows, Version=2.16.0.0, Culture=neutral, PublicKeyToken=532f270f1da385b3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Codeer.Friendly.Windows.2.16.0\lib\net20\Codeer.Friendly.Windows.dll</HintPath>
     </Reference>
-    <Reference Include="Codeer.Friendly.Windows.Grasp.2.0, Version=2.12.0.0, Culture=neutral, PublicKeyToken=92809a28945fb91d, processorArchitecture=MSIL">
-      <HintPath>..\packages\Codeer.Friendly.Windows.Grasp.2.12.0\lib\net35\Codeer.Friendly.Windows.Grasp.2.0.dll</HintPath>
+    <Reference Include="Codeer.Friendly.Windows.Grasp.2.0, Version=2.14.1.0, Culture=neutral, PublicKeyToken=92809a28945fb91d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Codeer.Friendly.Windows.Grasp.2.14.1\lib\net35\Codeer.Friendly.Windows.Grasp.2.0.dll</HintPath>
     </Reference>
-    <Reference Include="Codeer.Friendly.Windows.Grasp.3.5, Version=2.12.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Codeer.Friendly.Windows.Grasp.2.12.0\lib\net35\Codeer.Friendly.Windows.Grasp.3.5.dll</HintPath>
+    <Reference Include="Codeer.Friendly.Windows.Grasp.3.5, Version=2.14.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Codeer.Friendly.Windows.Grasp.2.14.1\lib\net35\Codeer.Friendly.Windows.Grasp.3.5.dll</HintPath>
     </Reference>
-    <Reference Include="Codeer.TestAssistant.GeneratorToolKit, Version=3.10.0.0, Culture=neutral, PublicKeyToken=f7af39ab9bcf13fe, processorArchitecture=MSIL">
-      <HintPath>..\packages\Codeer.TestAssistant.GeneratorToolKit.3.10.0\lib\net20\Codeer.TestAssistant.GeneratorToolKit.dll</HintPath>
+    <Reference Include="Codeer.Friendly.Windows.NativeStandardControls, Version=2.16.9.0, Culture=neutral, PublicKeyToken=90759bf0c8b8639e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Codeer.Friendly.Windows.NativeStandardControls.2.16.9\lib\net40\Codeer.Friendly.Windows.NativeStandardControls.dll</HintPath>
+    </Reference>
+    <Reference Include="Codeer.Friendly.Windows.NativeStandardControls.4.0, Version=2.16.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Codeer.Friendly.Windows.NativeStandardControls.2.16.9\lib\net40\Codeer.Friendly.Windows.NativeStandardControls.4.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Codeer.Friendly.Windows.NativeStandardControls.Generator, Version=2.16.9.0, Culture=neutral, PublicKeyToken=eea982eb65b72dea, processorArchitecture=MSIL">
+      <HintPath>..\packages\Codeer.Friendly.Windows.NativeStandardControls.2.16.9\lib\net40\Codeer.Friendly.Windows.NativeStandardControls.Generator.dll</HintPath>
+    </Reference>
+    <Reference Include="Codeer.TestAssistant.GeneratorToolKit, Version=3.13.0.0, Culture=neutral, PublicKeyToken=f7af39ab9bcf13fe, processorArchitecture=MSIL">
+      <HintPath>..\packages\Codeer.TestAssistant.GeneratorToolKit.3.13.0\lib\net40\Codeer.TestAssistant.GeneratorToolKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Codeer.TestAssistant.GeneratorToolKit.4.0, Version=3.13.0.0, Culture=neutral, PublicKeyToken=f1ee4e89052c526f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Codeer.TestAssistant.GeneratorToolKit.3.13.0\lib\net40\Codeer.TestAssistant.GeneratorToolKit.4.0.dll</HintPath>
     </Reference>
     <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RM.Friendly.WPFStandardControls.3.0, Version=1.46.1.0, Culture=neutral, PublicKeyToken=1b8f25b96765ebb0, processorArchitecture=MSIL">
-      <HintPath>..\packages\RM.Friendly.WPFStandardControls.1.46.1\lib\net40\RM.Friendly.WPFStandardControls.3.0.dll</HintPath>
+    <Reference Include="RM.Friendly.WPFStandardControls.3.0, Version=1.59.0.0, Culture=neutral, PublicKeyToken=1b8f25b96765ebb0, processorArchitecture=MSIL">
+      <HintPath>..\packages\RM.Friendly.WPFStandardControls.1.59.0\lib\net40\RM.Friendly.WPFStandardControls.3.0.dll</HintPath>
     </Reference>
-    <Reference Include="RM.Friendly.WPFStandardControls.3.0.Generator, Version=1.46.1.0, Culture=neutral, PublicKeyToken=41822cddf2e8cce7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RM.Friendly.WPFStandardControls.1.46.1\lib\net40\RM.Friendly.WPFStandardControls.3.0.Generator.dll</HintPath>
+    <Reference Include="RM.Friendly.WPFStandardControls.3.0.Generator, Version=1.59.0.0, Culture=neutral, PublicKeyToken=41822cddf2e8cce7, processorArchitecture=MSIL">
+      <HintPath>..\packages\RM.Friendly.WPFStandardControls.1.59.0\lib\net40\RM.Friendly.WPFStandardControls.3.0.Generator.dll</HintPath>
     </Reference>
-    <Reference Include="RM.Friendly.WPFStandardControls.3.5, Version=1.46.1.0, Culture=neutral, PublicKeyToken=133fc95b5bce0b86, processorArchitecture=MSIL">
-      <HintPath>..\packages\RM.Friendly.WPFStandardControls.1.46.1\lib\net40\RM.Friendly.WPFStandardControls.3.5.dll</HintPath>
+    <Reference Include="RM.Friendly.WPFStandardControls.3.5, Version=1.59.0.0, Culture=neutral, PublicKeyToken=133fc95b5bce0b86, processorArchitecture=MSIL">
+      <HintPath>..\packages\RM.Friendly.WPFStandardControls.1.59.0\lib\net40\RM.Friendly.WPFStandardControls.3.5.dll</HintPath>
     </Reference>
-    <Reference Include="RM.Friendly.WPFStandardControls.4.0, Version=1.46.1.0, Culture=neutral, PublicKeyToken=804da7e4293a9f15, processorArchitecture=MSIL">
-      <HintPath>..\packages\RM.Friendly.WPFStandardControls.1.46.1\lib\net40\RM.Friendly.WPFStandardControls.4.0.dll</HintPath>
+    <Reference Include="RM.Friendly.WPFStandardControls.4.0, Version=1.59.0.0, Culture=neutral, PublicKeyToken=804da7e4293a9f15, processorArchitecture=MSIL">
+      <HintPath>..\packages\RM.Friendly.WPFStandardControls.1.59.0\lib\net40\RM.Friendly.WPFStandardControls.4.0.dll</HintPath>
     </Reference>
-    <Reference Include="RM.Friendly.WPFStandardControls.4.0.Generator, Version=1.46.1.0, Culture=neutral, PublicKeyToken=12a0c2a29e956d84, processorArchitecture=MSIL">
-      <HintPath>..\packages\RM.Friendly.WPFStandardControls.1.46.1\lib\net40\RM.Friendly.WPFStandardControls.4.0.Generator.dll</HintPath>
+    <Reference Include="RM.Friendly.WPFStandardControls.4.0.Generator, Version=1.59.0.0, Culture=neutral, PublicKeyToken=12a0c2a29e956d84, processorArchitecture=MSIL">
+      <HintPath>..\packages\RM.Friendly.WPFStandardControls.1.59.0\lib\net40\RM.Friendly.WPFStandardControls.4.0.Generator.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -104,6 +116,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SaveFileDialog.cs" />
     <Compile Include="Controller\AIVOICEController.cs" />
     <Compile Include="Controller\CeVIOAIController.cs" />
     <Compile Include="Controller\CeVIOAIEnumerator.cs" />
@@ -130,6 +143,7 @@
     <Compile Include="SoundRecorder.cs" />
     <Compile Include="Controller\SAPI5Enumerator.cs" />
     <Compile Include="SoundPlayer.cs" />
+    <Compile Include="SoundStream.cs" />
     <Compile Include="SpeechEngineInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controller\SAPI5Controller.cs" />

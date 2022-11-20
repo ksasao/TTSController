@@ -1,6 +1,7 @@
 ﻿using Codeer.Friendly;
 using Codeer.Friendly.Windows;
 using Codeer.Friendly.Windows.Grasp;
+using Codeer.Friendly.Windows.NativeStandardControls;
 using RM.Friendly.WPFStandardControls;
 using System;
 using System.Collections.Generic;
@@ -107,6 +108,14 @@ namespace Speech
             }
         }
 
+        private bool CheckPlaying()
+        {
+            WPFButtonBase playButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 5, 3, 0, 3, 0));
+            var d = playButton.LogicalTree();
+            System.Windows.Visibility v = (System.Windows.Visibility)(d[2])["Visibility"]().Core;
+            return !System.Windows.Visibility.Visible.Equals(v);
+        }
+
         private void StopSpeech()
         {
             _timer.Stop();
@@ -179,12 +188,11 @@ namespace Speech
         /// <param name="text">再生する文字列</param>
         public void Play(string text)
         {
-            SetText(text);
+            SetTextAndPlay(text);
         }
-        internal virtual void SetText(string text)
+        internal virtual void SetTextAndPlay(string text)
         {
-            text = text.Trim() == "" ? "." : text;
-            string t = _libraryName + _promptString + text;
+            string t = AssembleText(text);
             if (_queue.Count == 0)
             {
                 WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 5, 3, 0, 2));
@@ -195,6 +203,17 @@ namespace Speech
             {
                 _queue.Enqueue(t);
             }
+        }
+        internal virtual void SetText(string text)
+        {
+            string t = AssembleText(text);
+            WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 5, 3, 0, 2));
+            textbox.EmulateChangeText(t);
+        }
+        internal virtual string AssembleText(string text)
+        {
+            text = text.Trim() == "" ? "." : text;
+            return _libraryName + _promptString + text;
         }
 
         /// <summary>
@@ -295,6 +314,231 @@ namespace Speech
         {
             WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 5, 0, 1, 0, 3, 0, 6, (int)t, 0, 7));
             return Convert.ToSingle(textbox.Text);
+        }
+
+        /// <summary>
+        /// ファイル分割設定
+        /// </summary>
+        public enum ExportSplitSetting
+        {
+            /// <summary>
+            /// 一つのファイルに書き出す
+            /// </summary>
+            OneFile,
+            /// <summary>
+            /// 1文毎に区切って複数のファイルに書き出す
+            /// </summary>
+            Sentence,
+            /// <summary>
+            /// 指定された文字列で区切って複数のファイルに書き出す
+            /// </summary>
+            Delimiter
+        }
+
+        /// <summary>
+        /// 音声保存設定を保持するクラス
+        /// </summary>
+        public class ExportSettings
+        {
+            /// <summary>
+            /// ファイル分割設定
+            /// </summary>
+            public ExportSplitSetting SplitSetting { get; set; } = ExportSplitSetting.OneFile;
+            /// <summary>
+            /// 区切り文字列
+            /// </summary>
+            public string SplitString { get; set; } = "/";
+            /// <summary>
+            /// 開始ポーズ(ミリ秒)
+            /// </summary>
+            public long PauseStart { get; set; } = 0;
+            /// <summary>
+            /// 終了ポーズ(ミリ秒)
+            /// </summary>
+            public long PauseEnd { get; set; } = 800;
+            /// <summary>
+            /// テキストファイルを音声ファイルと一緒に保存する
+            /// </summary>
+            public bool SaveWithText { get; set; } = false;
+            /// <summary>
+            /// 音声保存時に毎回設定を表示する
+            /// </summary>
+            public bool ShowSettings { get; set; } = true;
+            public override string ToString()
+            {
+                var sb = new StringBuilder();
+
+                sb.Append(nameof(SplitSetting));
+                sb.Append(":");
+                sb.Append(SplitSetting);
+                sb.Append(", ");
+
+                sb.Append(nameof(SplitString));
+                sb.Append(":");
+                sb.Append(SplitString);
+                sb.Append(", ");
+
+                sb.Append(nameof(PauseStart));
+                sb.Append(":");
+                sb.Append(PauseStart);
+                sb.Append(", ");
+
+                sb.Append(nameof(PauseEnd));
+                sb.Append(":");
+                sb.Append(PauseEnd);
+                sb.Append(", ");
+
+                sb.Append(nameof(SaveWithText));
+                sb.Append(":");
+                sb.Append(SaveWithText);
+                sb.Append(", ");
+
+                sb.Append(nameof(ShowSettings));
+                sb.Append(":");
+                sb.Append(ShowSettings);
+                sb.Append(", ");
+
+                return sb.ToString();
+            }
+        }
+
+        public static void ExportSetting(WindowControl win, bool isSet, ExportSettings exsettings)
+        {
+            var export1File = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 4));
+            var exportSentence = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 5));
+            var exportSplit = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 6));
+            var splitString = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 6, 1, 3, 7, 1));
+            WPFTextBox pauseStart = null;
+            WPFTextBox pauseEnd = null;
+            try
+            {
+                pauseStart = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 7, 1, 9, 0, 4)); ;
+                pauseEnd = new WPFTextBox(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 7, 1, 12, 0, 4));
+            }
+            catch (WindowIdentifyException e)
+            {
+                // VOICEROID2 Editor 2.1.1.0 で要素が取得できなくなった
+                // 取得に失敗した場合はないものとして扱う
+            }
+            var saveWithText = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 9, 1, 2));
+            var showSettings = new WPFToggleButton(win.IdentifyFromLogicalTreeIndex(0, 0, 0, 10));
+            if (isSet)
+            {
+                switch (exsettings.SplitSetting)
+                {
+                    case ExportSplitSetting.OneFile:
+                        export1File.EmulateCheck(true);
+                        break;
+                    case ExportSplitSetting.Sentence:
+                        exportSentence.EmulateCheck(true);
+                        break;
+                    case ExportSplitSetting.Delimiter:
+                        exportSplit.EmulateCheck(true);
+                        break;
+                }
+                splitString.EmulateChangeText(exsettings.SplitString);
+                pauseStart?.EmulateChangeText(exsettings.PauseStart.ToString());
+                pauseEnd?.EmulateChangeText(exsettings.PauseEnd.ToString());
+                saveWithText.EmulateCheck(exsettings.SaveWithText);
+                showSettings.EmulateCheck(exsettings.ShowSettings);
+                return;
+            }
+            if (export1File.IsChecked.GetValueOrDefault(true))
+            {
+                exsettings.SplitSetting = ExportSplitSetting.OneFile;
+            }
+            if (exportSentence.IsChecked.GetValueOrDefault(false))
+            {
+                exsettings.SplitSetting = ExportSplitSetting.Sentence;
+            }
+            if (exportSplit.IsChecked.GetValueOrDefault(false))
+            {
+                exsettings.SplitSetting = ExportSplitSetting.Delimiter;
+            }
+            exsettings.SplitString = splitString.Text;
+            if (pauseStart != null)
+            {
+                exsettings.PauseStart = long.Parse(pauseStart.Text);
+            }
+            if (pauseEnd != null)
+            {
+                exsettings.PauseEnd = long.Parse(pauseEnd.Text);
+            }
+            exsettings.SaveWithText = saveWithText.IsChecked.GetValueOrDefault(false);
+            exsettings.ShowSettings = showSettings.IsChecked.GetValueOrDefault(true);
+        }
+
+        public SoundStream ExportToStream(string text)
+        {
+            if (CheckPlaying())
+            {
+                // 再生中だと音声保存メニューを開けない
+                throw new InvalidOperationException("再生中のため処理できません");
+            }
+
+            var top = _app.FromZTop();
+            if (top.TypeFullName != "AI.Talk.Editor.MainWindow")
+            {
+                // TODO: 復帰処理を書く
+                throw new InvalidOperationException("何らかのウィンドウが開かれているため処理できません");
+            }
+            SetText(text);
+
+            var saveSoundMenu = new WPFMenuItem(_root.IdentifyFromLogicalTreeIndex(0, 3, 0, 7));
+            var saveWaveAsync = new Async();
+            saveSoundMenu.EmulateClick(saveWaveAsync);
+
+            var saveWaveWindow = _root.WaitForNextModal();
+            SaveFileDialog saveFileDialog = null;
+            Async okAsync = null;
+            if (saveWaveWindow.TypeFullName == "AI.Talk.Editor.SaveWaveWindow")
+            {
+                ExportSettings settings = new ExportSettings();
+                ExportSetting(saveWaveWindow, false, settings);
+                settings.SplitSetting = ExportSplitSetting.OneFile;
+                settings.SaveWithText = false;
+                ExportSetting(saveWaveWindow, true, settings);
+
+                var okButton = new WPFButtonBase(saveWaveWindow.IdentifyFromLogicalTreeIndex(0, 1, 0));
+                okAsync = new Async();
+                okButton.EmulateClick(okAsync);
+
+                saveFileDialog = new SaveFileDialog(saveWaveWindow.WaitForNextModal());
+            }
+            else
+            {
+                // 設定の「音声保存時に毎回設定を表示する」の場合は設定画面が出ない
+                // 設定を変更できないのであとの処理でエラーになる可能性がある
+                Console.Error.WriteLine("「音声保存時に毎回設定を表示する」にチェックが入っていないためエラーが発生する可能性があります");
+                saveFileDialog = new SaveFileDialog(saveWaveWindow);
+            }
+
+            var filePath = Path.Combine(Path.GetTempPath(), $"{this.GetType().Name}_{(uint)text.GetHashCode()}.wav");
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            saveFileDialog.Save(filePath);
+
+            while (true)
+            {
+                var dialog = _app.FromZTop();
+                if (dialog.TypeFullName == "AI.Talk.Editor.ProgressWindow")
+                {
+                    Thread.Sleep(50);
+                    continue;
+                }
+                var button = dialog.GetFromWindowClass("Button");
+                foreach (var b in button)
+                {
+                    var nb = new NativeButton(b);
+                    nb.EmulateClick();
+                }
+                break;
+            }
+            okAsync?.WaitForCompletion();
+            saveWaveAsync.WaitForCompletion();
+            return SoundStream.Open(filePath);
         }
 
         #region IDisposable Support

@@ -254,6 +254,11 @@ namespace Speech
             }
         }
 
+        public SoundStream ExportToStream(string text)
+        {
+            throw new NotImplementedException();
+        }
+
         #region IDisposable Support
         private bool disposedValue = false;
 

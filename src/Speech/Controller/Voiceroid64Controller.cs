@@ -1,6 +1,7 @@
 ﻿using Codeer.Friendly;
 using Codeer.Friendly.Windows;
 using Codeer.Friendly.Windows.Grasp;
+using Codeer.Friendly.Windows.NativeStandardControls;
 using RM.Friendly.WPFStandardControls;
 using System;
 using System.Collections.Generic;
@@ -104,6 +105,14 @@ namespace Speech
             }
         }
 
+        private bool CheckPlaying()
+        {
+            WPFButtonBase playButton = new WPFButtonBase(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 5, 3, 0, 3, 0));
+            var d = playButton.LogicalTree();
+            System.Windows.Visibility v = (System.Windows.Visibility)(d[2])["Visibility"]().Core;
+            return !System.Windows.Visibility.Visible.Equals(v);
+        }
+
         private void StopSpeech()
         {
             _timer.Stop();
@@ -177,12 +186,11 @@ namespace Speech
         /// <param name="text">再生する文字列</param>
         public void Play(string text)
         {
-            SetText(text);
+            SetTextAndPlay(text);
         }
-        internal virtual void SetText(string text)
+        internal virtual void SetTextAndPlay(string text)
         {
-            text = text.Trim() == "" ? "." : text;
-            string t = _libraryName + _promptString + text;
+            string t = AssembleText(text);
             if (_queue.Count == 0)
             {
                 WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 5, 3, 0, 2));
@@ -193,6 +201,17 @@ namespace Speech
             {
                 _queue.Enqueue(t);
             }
+        }
+        internal virtual void SetText(string text)
+        {
+            string t = AssembleText(text);
+            WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 3, 5, 3, 0, 2));
+            textbox.EmulateChangeText(t);
+        }
+        internal virtual string AssembleText(string text)
+        {
+            text = text.Trim() == "" ? "." : text;
+            return _libraryName + _promptString + text;
         }
 
         /// <summary>
@@ -293,6 +312,79 @@ namespace Speech
         {
             WPFTextBox textbox = new WPFTextBox(_root.IdentifyFromLogicalTreeIndex(0, 4, 5, 0, 1, 0, 3, 0, 6, (int)t, 0, 7));
             return Convert.ToSingle(textbox.Text);
+        }
+
+        public SoundStream ExportToStream(string text)
+        {
+            if (CheckPlaying())
+            {
+                // 再生中だと音声保存メニューを開けない
+                throw new InvalidOperationException("再生中のため処理できません");
+            }
+
+            var top = _app.FromZTop();
+            if (top.TypeFullName != "AI.Talk.Editor.MainWindow")
+            {
+                // TODO: 復帰処理を書く
+                throw new InvalidOperationException("何らかのウィンドウが開かれているため処理できません");
+            }
+            SetText(text);
+
+            var saveSoundMenu = new WPFMenuItem(_root.IdentifyFromLogicalTreeIndex(0, 3, 0, 7));
+            var saveWaveAsync = new Async();
+            saveSoundMenu.EmulateClick(saveWaveAsync);
+
+            var saveWaveWindow = _root.WaitForNextModal();
+            SaveFileDialog saveFileDialog = null;
+            Async okAsync = null;
+            if (saveWaveWindow.TypeFullName == "AI.Talk.Editor.SaveWaveWindow")
+            {
+                Voiceroid2Controller.ExportSettings settings = new Voiceroid2Controller.ExportSettings();
+                Voiceroid2Controller.ExportSetting(saveWaveWindow, false, settings);
+                settings.SplitSetting = Voiceroid2Controller.ExportSplitSetting.OneFile;
+                settings.SaveWithText = false;
+                Voiceroid2Controller.ExportSetting(saveWaveWindow, true, settings);
+
+                var okButton = new WPFButtonBase(saveWaveWindow.IdentifyFromLogicalTreeIndex(0, 1, 0));
+                okAsync = new Async();
+                okButton.EmulateClick(okAsync);
+
+                saveFileDialog = new SaveFileDialog(saveWaveWindow.WaitForNextModal());
+            }
+            else
+            {
+                // 設定の「音声保存時に毎回設定を表示する」の場合は設定画面が出ない
+                // 設定を変更できないのであとの処理でエラーになる可能性がある
+                Console.Error.WriteLine("「音声保存時に毎回設定を表示する」にチェックが入っていないためエラーが発生する可能性があります");
+                saveFileDialog = new SaveFileDialog(saveWaveWindow);
+            }
+
+            var filePath = Path.Combine(Path.GetTempPath(), $"{this.GetType().Name}_{(uint)text.GetHashCode()}.wav");
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            saveFileDialog.Save(filePath);
+
+            while (true)
+            {
+                var dialog = _app.FromZTop();
+                if (dialog.TypeFullName == "AI.Talk.Editor.ProgressWindow")
+                {
+                    Thread.Sleep(50);
+                    continue;
+                }
+                var button = dialog.GetFromWindowClass("Button");
+                foreach (var b in button)
+                {
+                    var nb = new NativeButton(b);
+                    nb.EmulateClick();
+                }
+                break;
+            }
+            okAsync?.WaitForCompletion();
+            saveWaveAsync.WaitForCompletion();
+            return SoundStream.Open(filePath);
         }
 
         #region IDisposable Support

@@ -76,6 +76,12 @@ namespace Speech
         /// </summary>
         /// <returns>起動していれば true </returns>
         bool IsActive();
+        /// <summary>
+        /// 指定した文字列を合成した音声を取得します
+        /// </summary>
+        /// <param name="text">合成する文字列</param>
+        /// <returns>出力された音声の Stream</returns>
+        SoundStream ExportToStream(string text);
 
     }
 }

@@ -100,43 +100,23 @@ namespace Speech
         public void Play(string text)
         {
             string tempFile = Path.GetTempFileName();
-
-            var content = new StringContent("", Encoding.UTF8, @"application/json");
-            var encodeText = Uri.EscapeDataString(text);
-
-            int talkerNo = _enumerator.Names[_libraryName];
-
-            string queryData = "";
-            using (var client = new HttpClient())
+            try
             {
-                try
+                var soundData = ExportToStream(text);
+
+                using (var fileStream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
-                    var response = client.PostAsync($"{_baseUrl}/audio_query?text={encodeText}&speaker={talkerNo}", content).GetAwaiter().GetResult();
-                    if (response.StatusCode != HttpStatusCode.OK) { return; }
-                    queryData = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    soundData.CopyTo(fileStream);
 
-                    // 音量等のパラメータを反映させる
-                    queryData = UpdateParam(queryData);
-
-                    content = new StringContent(queryData, Encoding.UTF8, @"application/json");
-                    response = client.PostAsync($"{_baseUrl}/synthesis?speaker={talkerNo}", content).GetAwaiter().GetResult();
-                    if (response.StatusCode != HttpStatusCode.OK) { return; }
-
-                    var soundData = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
-
-                    using (var fileStream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        soundData.CopyTo(fileStream);
-
-                    }
-
-                    SoundPlayer sp = new SoundPlayer();
-                    sp.Play(tempFile);
                 }
-                finally
-                {
-                    OnFinished();
-                }
+
+                SoundPlayer sp = new SoundPlayer();
+                sp.Play(tempFile);
+                File.Delete(tempFile);
+            }
+            finally
+            {
+                OnFinished();
             }
 
         }
@@ -219,6 +199,32 @@ namespace Speech
         {
             return Intonation;
         }
+
+        public SoundStream ExportToStream(string text)
+        {
+            var content = new StringContent("", Encoding.UTF8, @"application/json");
+            var encodeText = Uri.EscapeDataString(text);
+
+            int talkerNo = _enumerator.Names[_libraryName];
+
+            string queryData = "";
+            using (var client = new HttpClient())
+            {
+                var response = client.PostAsync($"{_baseUrl}/audio_query?text={encodeText}&speaker={talkerNo}", content).GetAwaiter().GetResult();
+                if (response.StatusCode != HttpStatusCode.OK) { return null; }
+                queryData = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                // 音量等のパラメータを反映させる
+                queryData = UpdateParam(queryData);
+
+                content = new StringContent(queryData, Encoding.UTF8, @"application/json");
+                response = client.PostAsync($"{_baseUrl}/synthesis?speaker={talkerNo}", content).GetAwaiter().GetResult();
+                if (response.StatusCode != HttpStatusCode.OK) { return null; }
+
+                return new SoundStream(response.Content.ReadAsStreamAsync().GetAwaiter().GetResult());
+            }
+        }
+
 
         
         #region IDisposable Support

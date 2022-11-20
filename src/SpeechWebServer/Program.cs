@@ -158,7 +158,31 @@ namespace SpeechWebServer
                         whisper = true;
                     }
 
+                    bool export = false;
+                    if (queryString["export"] != null)
+                    {
+                        bool.TryParse(queryString["export"], out export);
+                    }
+
                     Console.WriteLine("=> " + context.Request.RemoteEndPoint.Address);
+                    if (export)
+                    {
+                        try
+                        {
+                            using (var result = ExportMode(voiceName, engineName, voiceText, location, ep))
+                            {
+                                response.StatusCode = 200;
+                                response.ContentType = "audio/wav";
+                                result.CopyTo(response.OutputStream);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            response.StatusCode = 500;
+                            throw new Exception("Error", ex);
+                        }
+                        continue;
+                    }
 
                     response.StatusCode = 200;
                     response.ContentType = "text/plain; charset=utf-8";
@@ -233,6 +257,20 @@ namespace SpeechWebServer
                 engine.SetPitchRange(ep.PitchRange);
             }
             return engine;
+        }
+
+        private static Stream ExportMode(string libraryName, string engineName, string text, string location, EngineParameters ep)
+        {
+            var engine = ActivateInstance(libraryName, engineName, text, location, ep);
+            if (engine == null)
+            {
+                return null;
+            }
+            engine.Finished += (s, a) =>
+            {
+                engine.Dispose();
+            };
+            return engine.ExportToStream(text);
         }
 
         private static void OneShotPlayMode(string libraryName, string engineName, string text, string location, EngineParameters ep)

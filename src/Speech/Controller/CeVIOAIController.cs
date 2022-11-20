@@ -259,6 +259,16 @@ namespace Speech
             return _talker.Alpha;
         }
 
+        public SoundStream ExportToStream(string text)
+        {
+            string tempFile = Path.GetTempFileName();
+            if (_talker.OutputWaveToFile(text, tempFile))
+            {
+                return SoundStream.Open(tempFile);
+            }
+            return null;
+        }
+
 
         #region IDisposable Support
         private bool disposedValue = false;
