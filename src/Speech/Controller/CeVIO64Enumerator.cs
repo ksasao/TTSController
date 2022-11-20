@@ -26,6 +26,8 @@ namespace Speech
             // CeVIO CS7 を探す
             string cevioPath = Environment.ExpandEnvironmentVariables("%ProgramW6432%")
                           + @"\CeVIO\CeVIO Creative Studio (64bit)";
+            string cevio32Path = Environment.ExpandEnvironmentVariables("%ProgramW6432%")
+              + @"\CeVIO\CeVIO Creative Studio";
             _installedPath = cevioPath + @"\CeVIO Creative Studio.exe";
 
             if (Directory.Exists(cevioPath) && File.Exists(_installedPath))
@@ -34,6 +36,19 @@ namespace Speech
                 // CeVIOを起動せずにインストールされた音源一覧を取得する
                 string[] talkDirectory = Directory.GetDirectories(Path.Combine(cevioPath, @"Configuration\VocalSource\Talk"));
                 foreach (var d in talkDirectory)
+                {
+                    string config = Path.Combine(d, "setting.cfg");
+                    if (File.Exists(config))
+                    {
+                        var xml = XDocument.Load(config);
+                        var doc = xml.Element("VocalSource");
+                        string name = doc.Attribute("Name").Value;
+                        presetName.Add(name);
+                    }
+                }
+                // IA/ONEはフォルダが異なる
+                string[] talkDirectoryIAONE = Directory.GetDirectories(Path.Combine(cevio32Path, @"Configuration\VocalSource\Talk"));
+                foreach (var d in talkDirectoryIAONE)
                 {
                     string config = Path.Combine(d, "setting.cfg");
                     if (File.Exists(config))
