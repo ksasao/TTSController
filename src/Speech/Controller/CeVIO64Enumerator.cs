@@ -47,6 +47,7 @@ namespace Speech
                     }
                 }
                 // IA/ONEはフォルダが異なる
+                // https://github.com/ksasao/TTSController/issues/11
                 string[] talkDirectoryIAONE = Directory.GetDirectories(Path.Combine(cevio32Path, @"Configuration\VocalSource\Talk"));
                 foreach (var d in talkDirectoryIAONE)
                 {

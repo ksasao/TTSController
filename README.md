@@ -2,7 +2,7 @@
 各種 Text-to-Speech エンジンを統一的に操作するライブラリです。VOICEROIDなどを自動化する簡易Webサーバもあります。
 
 ## 対応プラットフォーム
-- Windows 10 (64bit)
+- Windows 10/11 (64bit)
 
 ## 対応音声合成ライブラリ
 - VOICEROID+ 各種
@@ -11,7 +11,7 @@
 - A.I.VOICE (要x64ビルド)
 - ガイノイドTALK 各種
 - かんたん！AITalk3 / 関西風 / Lite
-- CeVIO CS6 / CS7
+- CeVIO CS6 / CS7 (x86, x64)
 - CeVIO AI (要x64ビルド)
 - VOICEVOX
 - COEIROINK
@@ -30,7 +30,7 @@
 |かんたん！AITalk3 LITE|あんず(LITE), かほ(LITE), ななこ(LITE), のぞみ(LITE), せいじ(LITE)|
 |ガイノイドTALK|鳴花ヒメ, 鳴花ミコト|
 |A.I.VOICE|琴葉 茜,琴葉 茜（蕾）,琴葉 茜,琴葉 茜（蕾）,Kotonoha Akane (English),Kotonoha Aoi (English),結城 香, 足立 レイ|
-|CeVIO CS6 / CS7 (32bit/64bit)|さとうささら, すずきつづみ, タカハシ, IA, ONE|
+|CeVIO CS6 / CS7|さとうささら, すずきつづみ, タカハシ, IA, ONE|
 |CeVIO AI|さとうささら, 小春六花, 弦巻マキ (英), 弦巻マキ (日) ※ライセンスエラーが出る場合は [#5](https://github.com/ksasao/TTSController/issues/5) へお知らせください|
 |VOICEVOX|四国めたん,ずんだもん,春日部つむぎ,雨晴はう,波音リツ,玄野武宏,白上虎太郎,青山龍星,冥鳴ひまり,九州そら|
 |COEIROINK|つくよみちゃん,MANA,おふとんP,ディアちゃん,アルマちゃん|
