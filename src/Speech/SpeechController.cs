@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,28 +10,60 @@ namespace Speech
 {
     public class SpeechController
     {
-        static ISpeechEnumerator[] speechEnumerator =
+        string[] enumerators =
         {
-            new AIVOICEEnumerator(),
-            new AITalk3Enumerator(),
-            new VoiceroidPlusEnumerator(),
-            new Voiceroid2Enumerator(),
-            new Voiceroid64Enumerator(),
-            new GynoidTalkEnumerator(),
-            new OtomachiUnaTalkEnumerator(),
-            new CeVIOEnumerator(),
-            new CeVIO64Enumerator(),
-            new CeVIOAIEnumerator(),
-            new SAPI5Enumerator(),
-            new VOICEVOXEnumerator(),
-            new COEIROINKEnumerator(),
-            new SHAREVOXEnumerator()
+            "AIVOICEEnumerator",
+            "AITalk3Enumerator",
+            "VoiceroidPlusEnumerator",
+            "Voiceroid2Enumerator",
+            "Voiceroid64Enumerator",
+            "GynoidTalkEnumerator",
+            "OtomachiUnaTalkEnumerator",
+            "CeVIOEnumerator",
+            "CeVIO64Enumerator",
+            "CeVIOAIEnumerator",
+            "SAPI5Enumerator",
+            "VOICEVOXEnumerator",
+            "COEIROINKEnumerator",
+            "SHAREVOXEnumerator",
+            "VOICEPEAKEnumerator"
         };
+        ISpeechEnumerator[] speechEnumerator;
+
+        private static SpeechController instance = null;
+        BlockingCollection<ISpeechEnumerator> bc = new BlockingCollection<ISpeechEnumerator>();
+
+        private ISpeechEnumerator CreateInstance(string typeName)
+        {
+            Type type = Type.GetType("Speech." + typeName + ",Speech"); // Speechはアセンブリ名
+            var instance = Activator.CreateInstance(type) as ISpeechEnumerator;
+            return instance;
+        }
+
+        private SpeechController()
+        {
+            Parallel.ForEach(enumerators, e =>
+            {
+                ISpeechEnumerator instance = CreateInstance(e);
+                if(instance != null)
+                {
+                    bc.Add(instance);
+                }
+            });
+            bc.CompleteAdding();
+            speechEnumerator = bc.ToArray();
+            bc.Dispose();
+        }
+
         public static SpeechEngineInfo[] GetAllSpeechEngine()
         {
+            if(instance == null)
+            {
+                instance = new SpeechController();
+            }
             List<SpeechEngineInfo> info = new List<SpeechEngineInfo>();
 
-            foreach(var se in speechEnumerator)
+            foreach(var se in instance.speechEnumerator)
             {
                 var e = se.GetSpeechEngineInfo();
                 if(e.Length > 0 && e[0].Is64BitProcess == Environment.Is64BitProcess)
@@ -67,7 +101,11 @@ namespace Speech
 
         public static ISpeechController GetInstance(SpeechEngineInfo info)
         {
-            foreach(var i in speechEnumerator)
+            if (instance == null)
+            {
+                instance = new SpeechController();
+            }
+            foreach (var i in instance.speechEnumerator)
             {
                 var controller = i.GetControllerInstance(info);
                 if(controller != null)

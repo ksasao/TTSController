@@ -199,7 +199,6 @@ namespace SpeechWebServer
 
         private static ISpeechController ActivateInstance(string libraryName, string engineName, string text, string location, EngineParameters ep)
         {
-            var engines = SpeechController.GetAllSpeechEngine();
             ISpeechController engine = engineName == "" ?
                 SpeechController.GetInstance(libraryName) : SpeechController.GetInstance(libraryName, engineName);
             if (engine == null)

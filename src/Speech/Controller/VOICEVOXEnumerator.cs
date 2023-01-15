@@ -54,6 +54,7 @@ namespace Speech
             {
                 using (var client = new HttpClient())
                 {
+                    client.Timeout = TimeSpan.FromSeconds(2);
                     var response = client.GetAsync($"{baseUrl}/speakers").GetAwaiter().GetResult();
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
