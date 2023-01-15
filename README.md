@@ -16,6 +16,7 @@
 - VOICEVOX
 - COEIROINK
 - SAPI5 (Windows10標準の音声合成機能。スタートメニュー>設定>時刻と言語>音声認識>音声の管理>音声の追加から各国語の音声が追加できます。API仕様により追加しても列挙されない音声があります。)
+- VOICEPEAK
 
 ### 動作確認済みリスト
 ライブラリ名はインストールされたフォルダなどを参照して機械的に抽出しているため、リストにないものでも音声合成エンジンが共通であれば動作する可能性が高いです。
@@ -35,6 +36,7 @@
 |VOICEVOX|四国めたん,ずんだもん,春日部つむぎ,雨晴はう,波音リツ,玄野武宏,白上虎太郎,青山龍星,冥鳴ひまり,九州そら|
 |COEIROINK|つくよみちゃん,MANA,おふとんP,ディアちゃん,アルマちゃん|
 |SAPI5|Microsoft Haruka Desktop, Microsoft David Desktop, Microsoft Zira Desktop, Microsoft Irina Desktop|
+|VOICEPEAK(1.2.1以降)|Frimomen, Tohoku Zunko, Zundamon, Japanese Female Child, Japanese Male 1, Japanese Male 2, Japanese Male 3, Japanese Female 1, Japanese Female 2, Japanese Female 3|
 
 ## ブラウザで音声合成する
 この実装は簡易実装であり、音声合成ライブラリと同一のPC上で実行することを想定しています。インターネット上への公開は、セキュリティ上のリスクや音声合成ライブラリのライセンス上の問題がある可能性があります。
