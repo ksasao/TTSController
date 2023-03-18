@@ -32,7 +32,11 @@ namespace Speech
             psInfo.UseShellExecute = false;
             psInfo.RedirectStandardOutput = true;
             psInfo.Arguments = args;
-
+            
+            if(String.IsNullOrEmpty(path))
+            {
+                return new string[0];
+            }
             using (Process p = Process.Start(psInfo))
             {
                 // Voicepeakは非同期実行されるのでプロセス終了後に標準出力を取り出す
