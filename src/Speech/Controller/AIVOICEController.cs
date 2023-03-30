@@ -131,9 +131,7 @@ namespace Speech
         /// </summary>
         public void Activate()
         {
-            string path =
-                Environment.ExpandEnvironmentVariables("%ProgramW6432%")
-                + @"\AI\AIVoice\AIVoiceEditor\AI.Talk.Editor.Api.dll";
+            string path = Path.Combine(Path.GetDirectoryName(AIVOICEPath), "AI.Talk.Editor.Api.dll");
             Assembly assembly = Assembly.LoadFrom(path);
             Type type = assembly.GetType("AI.Talk.Editor.Api.TtsControl");
             _ttsControl = Activator.CreateInstance(type, new object[] { });
