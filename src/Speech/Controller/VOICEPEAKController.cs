@@ -14,8 +14,6 @@ namespace Speech
 {
     public class VOICEPEAKController : IDisposable, ISpeechController
     {
-        string path = "";
-        string[] emotions = null;
 
         public SpeechEngineInfo Info { get; private set; }
 
