@@ -16,7 +16,7 @@ namespace Speech
         public SHAREVOXEnumerator() 
         {
             // https://github.com/SHAREVOX/sharevox_engine
-            Initialize("SHAREVOX", "http://localhost:50025");
+            Initialize("SHAREVOX", "http://127.0.0.1:50025");
         }
         public override ISpeechController GetControllerInstance(SpeechEngineInfo info)
         {

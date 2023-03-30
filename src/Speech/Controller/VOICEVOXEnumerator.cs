@@ -41,7 +41,7 @@ namespace Speech
         public Dictionary<string, int> Names = new Dictionary<string, int>();
         public VOICEVOXEnumerator()
         {
-            Initialize("VOICEVOX","http://localhost:50021");
+            Initialize("VOICEVOX","http://127.0.0.1:50021");
         }
 
         public string AssemblyPath { get; private set; }

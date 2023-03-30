@@ -15,7 +15,7 @@ namespace Speech
     {
         public COEIROINKEnumerator() 
         {
-            Initialize("COEIROINK", "http://localhost:50031");
+            Initialize("COEIROINK", "http://127.0.0.1:50031");
         }
         public override ISpeechController GetControllerInstance(SpeechEngineInfo info)
         {
