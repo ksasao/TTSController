@@ -32,6 +32,7 @@ namespace Speech
             psInfo.UseShellExecute = false;
             psInfo.RedirectStandardOutput = true;
             psInfo.Arguments = args;
+            psInfo.StandardOutputEncoding = Encoding.UTF8;
 
             using (Process p = Process.Start(psInfo))
             {
